@@ -1,0 +1,152 @@
+### PGATS-02 API - Exemplos de Requisições
+### Use este arquivo com extensões como REST Client para VSCode
+
+### 1. Health Check
+GET http://localhost:3000/health
+
+### 2. Documentação Swagger
+GET http://localhost:3000/api-docs
+
+### 3. Registrar primeiro usuário
+POST http://localhost:3000/users/register
+Content-Type: application/json
+
+{
+  "name": "João Silva",
+  "email": "joao@email.com",
+  "password": "senha123"
+}
+
+### 4. Registrar segundo usuário
+POST http://localhost:3000/users/register
+Content-Type: application/json
+
+{
+  "name": "Maria Santos",
+  "email": "maria@email.com",
+  "password": "senha456"
+}
+
+### 5. Login
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "joao@email.com",
+  "password": "senha123"
+}
+
+### 6. Listar usuários (requer token)
+GET http://localhost:3000/users
+Authorization: Bearer SEU_TOKEN_AQUI
+
+### 7. Ver perfil (requer token)
+GET http://localhost:3000/users/profile
+Authorization: Bearer SEU_TOKEN_AQUI
+
+### 8. Ver saldo (requer token)
+GET http://localhost:3000/users/balance
+Authorization: Bearer SEU_TOKEN_AQUI
+
+### 9. Adicionar favorito (requer token)
+POST http://localhost:3000/transfers/favorites
+Content-Type: application/json
+Authorization: Bearer SEU_TOKEN_AQUI
+
+{
+  "account": "CONTA_DO_USUARIO_2"
+}
+
+### 10. Listar favoritos (requer token)
+GET http://localhost:3000/transfers/favorites
+Authorization: Bearer SEU_TOKEN_AQUI
+
+### 11. Transferência para favorito - valor alto (requer token)
+POST http://localhost:3000/transfers
+Content-Type: application/json
+Authorization: Bearer SEU_TOKEN_AQUI
+
+{
+  "toAccount": "CONTA_DO_USUARIO_2",
+  "amount": 6000.00,
+  "description": "Transferência para favorito"
+}
+
+### 12. Transferência para não-favorito - valor baixo (requer token)
+POST http://localhost:3000/transfers
+Content-Type: application/json
+Authorization: Bearer SEU_TOKEN_AQUI
+
+{
+  "toAccount": "CONTA_DO_USUARIO_2",
+  "amount": 100.00,
+  "description": "Transferência pequena"
+}
+
+### 13. Transferência para não-favorito - valor alto (deve falhar)
+POST http://localhost:3000/transfers
+Content-Type: application/json
+Authorization: Bearer SEU_TOKEN_AQUI
+
+{
+  "toAccount": "CONTA_DO_USUARIO_2",
+  "amount": 6000.00,
+  "description": "Transferência alta para não-favorito"
+}
+
+### 14. Listar transferências (requer token)
+GET http://localhost:3000/transfers
+Authorization: Bearer SEU_TOKEN_AQUI
+
+### 15. Remover favorito (requer token)
+DELETE http://localhost:3000/transfers/favorites/1
+Authorization: Bearer SEU_TOKEN_AQUI
+
+### Cenários de erro para teste
+
+### Login sem senha
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "joao@email.com"
+}
+
+### Login com credenciais inválidas
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "joao@email.com",
+  "password": "senhaerrada"
+}
+
+### Registro com email duplicado
+POST http://localhost:3000/users/register
+Content-Type: application/json
+
+{
+  "name": "João Duplicado",
+  "email": "joao@email.com",
+  "password": "senha123"
+}
+
+### Transferência sem token
+POST http://localhost:3000/transfers
+Content-Type: application/json
+
+{
+  "toAccount": "123456",
+  "amount": 100.00
+}
+
+### Transferência para conta inexistente
+POST http://localhost:3000/transfers
+Content-Type: application/json
+Authorization: Bearer SEU_TOKEN_AQUI
+
+{
+  "toAccount": "999999",
+  "amount": 100.00,
+  "description": "Para conta inexistente"
+}
