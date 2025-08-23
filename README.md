@@ -45,16 +45,129 @@ API REST desenvolvida em Node.js com Express para aprendizado de testes e automa
 - Validação de saldo insuficiente
 - Não é possível transferir para si mesmo
 
-## 🛠️ Tecnologias Utilizadas
+## 🛠️ Tecnologias e Frameworks Utilizados
 
-- **Node.js** - Runtime JavaScript
-- **Express.js** - Framework web
-- **bcryptjs** - Criptografia de senhas
-- **jsonwebtoken** - Autenticação JWT
-- **joi** - Validação de dados
-- **swagger-jsdoc** - Documentação da API
-- **swagger-ui-express** - Interface do Swagger
-- **cors** - Cross-Origin Resource Sharing
+### Runtime e Framework Principal
+- **Node.js** - Runtime JavaScript para execução do código no servidor
+- **Express.js** - Framework web minimalista e flexível para Node.js, usado para criar APIs REST de forma rápida e eficiente
+
+### Segurança e Autenticação
+- **bcryptjs** - Biblioteca para hash de senhas, garantindo que as senhas sejam armazenadas de forma segura através de criptografia
+- **jsonwebtoken (JWT)** - Implementação de JSON Web Tokens para autenticação stateless, permitindo autenticação segura entre cliente e servidor
+- **cors** - Middleware para habilitação de Cross-Origin Resource Sharing, permitindo que a API seja acessada por diferentes domínios
+
+### Validação e Documentação
+- **joi** - Biblioteca para validação de dados de entrada, garantindo que apenas dados válidos sejam processados pela API
+- **swagger-jsdoc** - Gerador de documentação OpenAPI/Swagger a partir de comentários JSDoc no código
+- **swagger-ui-express** - Interface web interativa para visualização e teste da documentação da API
+
+### Framework de Testes
+- **mocha** - Framework de testes JavaScript flexível e rico em recursos, usado para estruturar e executar os testes
+- **chai** - Biblioteca de assertions BDD/TDD para Node.js, fornece uma interface expressiva para escrever testes
+- **sinon** - Biblioteca para criação de spies, stubs e mocks, permitindo testes isolados e simulação de comportamentos
+- **supertest** - Biblioteca específica para testes de APIs HTTP, facilitando testes de integração em aplicações Express
+
+### Utilitários de Desenvolvimento
+- **nodemon** - Utilitário que monitora mudanças no código e reinicia automaticamente o servidor durante o desenvolvimento
+
+## 🏗️ Arquitetura e Padrões
+
+### Padrão MVC (Model-View-Controller)
+O projeto segue uma arquitetura em camadas inspirada no padrão MVC:
+
+- **Models** (`src/models/`) - Definem a estrutura dos dados (User, Transfer, Favorite)
+- **Controllers** (`src/controllers/`) - Gerenciam as requisições HTTP e coordenam as respostas
+- **Services** (`src/services/`) - Contêm a lógica de negócio e regras da aplicação
+- **Routes** (`src/routes/`) - Definem os endpoints e fazem a ligação com os controllers
+
+### Separação de Responsabilidades
+- **Database** (`src/database/`) - Camada de persistência em memória
+- **Middlewares** (`src/middlewares/`) - Funções intermediárias para autenticação e validação
+- **Config** (`src/config/`) - Configurações da aplicação (Swagger, etc.)
+
+### Arquitetura para Testes
+- **app.js** - Aplicação Express sem o método `listen()`, ideal para importação em testes
+- **server.js** - Servidor HTTP que importa o app e inicia o servidor
+- **test/** - Pasta dedicada para todos os arquivos de teste
+  - **test/controller/** - Testes específicos dos controllers
+  - **test/example.test.js** - Exemplos de testes da API completa
+- **.mocharc.json** - Configuração centralizada do framework de testes
+
+## 💡 Benefícios da Stack Escolhida
+
+### Produtividade
+- **Express.js**: Framework minimalista que acelera o desenvolvimento de APIs
+- **Swagger**: Documentação automática e interface de testes integrada
+- **Nodemon**: Desenvolvimento mais ágil com reload automático
+
+### Segurança
+- **bcryptjs**: Hash seguro de senhas com salt automático
+- **JWT**: Autenticação stateless e escalável
+- **Joi**: Validação robusta de entrada de dados
+
+### Testabilidade
+- **Mocha + Chai**: Sintaxe expressiva e flexível para testes
+- **Supertest**: Testes de API simplificados
+- **Sinon**: Mocking avançado para testes isolados
+- **Separação app/server**: Facilita importação em testes
+- **Organização por camadas**: Testes espelham a estrutura do código
+- **Configuração centralizada**: .mocharc.json para setup consistente
+
+### Manutenibilidade
+- **Arquitetura em camadas**: Código organizado e fácil de manter
+- **Separação de responsabilidades**: Cada módulo tem uma função específica
+- **Validação centralizada**: Middlewares reutilizáveis
+
+## 🎯 Por Que Esses Frameworks?
+
+### Express.js vs Alternativas
+**Escolhido por**: Simplicidade, maturidade, grande ecossistema
+- ✅ Comunidade ativa e documentação extensa
+- ✅ Middleware ecosystem robusto
+- ✅ Performance adequada para APIs REST
+- 🆚 **Fastify**: Mais rápido, mas menor ecossistema
+- 🆚 **Koa**: Mais moderno, mas sintaxe mais complexa
+
+### Mocha + Chai vs Jest
+**Escolhido por**: Flexibilidade e controle fino
+- ✅ Configuração mais granular
+- ✅ Melhor para testes de API com Supertest
+- ✅ Sintaxe BDD mais expressiva (Chai)
+- ✅ Separação clara entre runner (Mocha) e assertions (Chai)
+- 🆚 **Jest**: Mais opinativo, mas setup mais simples
+
+### JWT vs Session-based Auth
+**Escolhido por**: Escalabilidade e stateless
+- ✅ Não requer armazenamento de sessão no servidor
+- ✅ Ideal para APIs REST
+- ✅ Facilita arquitetura de microserviços
+- 🆚 **Sessions**: Mais seguro, mas menos escalável
+
+### Joi vs Alternativas
+**Escolhido por**: Expressividade e recursos avançados
+- ✅ Validação declarativa e legível
+- ✅ Mensagens de erro customizáveis
+- ✅ Suporte a validações complexas
+- 🆚 **Yup**: Mais leve, mas menos recursos
+- 🆚 **Express-validator**: Integração direta, mas menos flexível
+
+## ⚡ Considerações de Performance
+
+### Otimizações Implementadas
+- **Middleware de validação**: Rejeita dados inválidos antes do processamento
+- **JWT stateless**: Elimina consultas de sessão no banco
+- **Estrutura modular**: Carregamento apenas do necessário
+- **Hash assíncrono**: bcryptjs não bloqueia o event loop
+
+### Limitações do Banco em Memória
+- 📊 **Adequado para**: Desenvolvimento, testes, prototipagem
+- ⚠️ **Limitações**: Dados perdidos no restart, não escalável
+- 🚀 **Próximos passos**: MongoDB, PostgreSQL ou Redis para produção
+
+### Escalabilidade
+- **Horizontal**: Stateless JWT permite múltiplas instâncias
+- **Vertical**: Express.js lida bem com aumento de recursos
+- **Monitoramento**: Endpoint `/health` para health checks
 
 ## 📁 Estrutura do Projeto
 
@@ -84,17 +197,30 @@ pgats-02-api/
 │       ├── authService.js       # Serviço de autenticação
 │       ├── userService.js       # Serviço de usuários
 │       └── transferService.js   # Serviço de transferências
+├── test/
+│   ├── controller/
+│   │   └── transferController.test.js # Testes do controller de transferências
+│   └── example.test.js          # Exemplos de testes da API
+├── .mocharc.json               # Configuração do Mocha
 ├── app.js                       # Configuração da aplicação Express
 ├── server.js                    # Servidor HTTP
-├── package.json                 # Dependências e scripts
-└── README.md                    # Documentação
+├── examples.http               # Exemplos de requisições HTTP
+├── package.json                # Dependências e scripts
+└── README.md                   # Documentação
 ```
 
 ## 🚀 Como Executar
 
 ### Pré-requisitos
-- Node.js (versão 14 ou superior)
-- npm ou yarn
+- **Node.js** (versão 14 ou superior) - Recomendado: v18+ para melhor compatibilidade
+- **npm** (v6+) ou **yarn** (v1.22+)
+
+### Versões das Dependências Principais
+- **Express**: ^4.18.2 - Framework web estável e maduro
+- **Mocha**: ^11.7.1 - Framework de testes atualizado
+- **Chai**: ^6.0.1 - Biblioteca de assertions moderna
+- **JWT**: ^9.0.2 - Implementação segura de tokens
+- **Swagger**: ^6.2.8 - Documentação OpenAPI 3.0
 
 ### Instalação
 
@@ -211,17 +337,30 @@ A aplicação utiliza um banco de dados **em memória** (variáveis JavaScript) 
 - Contas são geradas automaticamente com 6 dígitos
 - Não há dados pré-carregados
 
-## 🧪 Testando com Supertest
+## 🧪 Testando com Chai/Mocha + Supertest
 
-O projeto foi estruturado para facilitar testes com Supertest:
+O projeto foi estruturado para facilitar testes com Chai, Mocha e Supertest:
 
+### Estrutura de Testes Organizada
+```
+test/
+├── controller/              # Testes de controllers específicos
+│   └── transferController.test.js
+├── service/                 # Testes de serviços (expansível)
+├── middleware/              # Testes de middlewares (expansível)
+├── integration/             # Testes de integração (expansível)
+└── example.test.js          # Exemplos gerais da API
+```
+
+### Exemplo de Teste
 ```javascript
 // Exemplo de teste
 const request = require('supertest');
+const { expect } = require('chai');
 const app = require('./app'); // Importa apenas o app, sem o listen()
 
 describe('Auth', () => {
-  test('should login successfully', async () => {
+  it('should login successfully', async () => {
     const response = await request(app)
       .post('/auth/login')
       .send({
@@ -229,11 +368,20 @@ describe('Auth', () => {
         password: 'password123'
       });
     
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('data.token');
+    expect(response.status).to.equal(200);
+    expect(response.body).to.have.property('data');
+    expect(response.body.data).to.have.property('token');
   });
 });
 ```
+
+### Expansão da Estrutura de Testes
+Para expandir os testes, organize por camadas seguindo a estrutura do `src/`:
+- **test/controller/** - Testes unitários dos controllers
+- **test/service/** - Testes unitários dos serviços
+- **test/middleware/** - Testes dos middlewares
+- **test/integration/** - Testes de fluxo completo
+- **test/util/** - Utilitários e helpers para testes
 
 ## 📝 Scripts Disponíveis
 
@@ -241,7 +389,7 @@ describe('Auth', () => {
 {
   "start": "node server.js",
   "dev": "nodemon server.js",
-  "test": "jest"
+  "test": "mocha"
 }
 ```
 
