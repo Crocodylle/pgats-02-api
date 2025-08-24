@@ -79,7 +79,7 @@ class TransferService {
     // Validar se conta existe
     const favoritedUser = findUserByAccount(favoritedAccount);
     if (!favoritedUser) {
-      throw new Error('Conta não encontrada');
+      throw new Error('Conta de destino não encontrada');
     }
 
     // Verificar se não está tentando favoritar a si mesmo
