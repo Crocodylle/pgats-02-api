@@ -327,10 +327,53 @@ describe('Transfer Controller', () => {
 
       it('Transferencia para conta que acabou de ser deletada')
 
+  });
+
+   describe('POST /favorites', () => { 
+      it('Adicionar Favorito com sucesso retorna 201', async () => { 
+         const normalUser = await createTestUser();
+         const favorecido = await createTestUser();
+         const token = createTestToken(normalUser.id, normalUser.email, normalUser.account)
+
+         const response = await addFavorite(token, favorecido.account )
+
+         expect(response.status).to.equal(201);
+         expect(response.body.data.account).to.equal(favorecido.account);
+    
+   });
+
+   it('Adicionar Favorito com conta inexistente recebe 404', async () => { 
+      const normalUser = await createTestUser();
+      const token = createTestToken(normalUser.id, normalUser.email, normalUser.account)
+
+      const response = await addFavorite(token, '123456')
+
+      expect(response.status).to.equal(404);
+      expect(response.body.error).to.equal('Conta não encontrada');
+
+   });
+
+   it('Adicionar mesma conta aos favoritos duas vezes recebe 409', async () => { 
+      const normalUser = await createTestUser();
+      const favorecido = await createTestUser();
+      const token = createTestToken(normalUser.id, normalUser.email, normalUser.account)
+
+      const addedFavorite = await addFavorite(token, favorecido.account )
+      expect(addedFavorite.status).to.equal(201);
+      expect(addedFavorite.body.data.account).to.equal(favorecido.account);
+
+      const addedFavoriteagain = await addFavorite(token, favorecido.account )
+      expect(addedFavoriteagain.status).to.equal(409);
+      expect(addedFavoriteagain.body.error).to.contain('Usuário já está nos favoritos');
+   });
 });
 
+   describe('GET /favorites', () => { 
+      it('Listar favoritos sem autenticacao recebe 401')
+
+      it('Listar favoritos retorna array vazio inicialmente')
+
+      it('Listar favoritos retorna array com contas favoritas')
+   });
+
 });
-
-
-
-
