@@ -16,45 +16,37 @@ class TransferService {
   async createTransfer(fromUserId, transferData) {
     const { toAccount, amount, description } = transferData;
 
-    // Validar dados obrigatórios
-    if (!toAccount || !amount) {
-      throw new Error('Conta de destino e valor são obrigatórios');
-    }
-
-    // Validar valor
-    if (amount <= 0) {
-      throw new Error('Valor deve ser maior que zero');
-    }
-
-    // Buscar usuário remetente
+    // ✅ BUSINESS LOGIC VALIDATION ONLY (Format validation handled by Joi)
+    
+    // Business rule: Sender user exists?
     const fromUser = findUserById(fromUserId);
     if (!fromUser) {
       throw new Error('Usuário remetente não encontrado');
     }
 
-    // Buscar usuário destinatário
+    // Business rule: Target account exists?
     const toUser = findUserByAccount(toAccount);
     if (!toUser) {
       throw new Error('Conta de destino não encontrada');
     }
 
-    // Verificar se não é transferência para si mesmo
+    // Business rule: Can't transfer to self
     if (fromUser.account === toAccount) {
       throw new Error('Não é possível transferir para si mesmo');
     }
 
-    // Verificar saldo suficiente
+    // Business rule: Sufficient balance?
     if (fromUser.balance < amount) {
       throw new Error('Saldo insuficiente');
     }
 
-    // Verificar regra de favorecido para valores acima de R$ 5.000,00
+    // Business rule: High amount restriction for non-favorites
     const isToUserFavorite = isFavorite(fromUserId, toAccount);
     if (amount > 5000 && !isToUserFavorite) {
       throw new Error('Transferências acima de R$ 5.000,00 só podem ser realizadas para usuários favorecidos');
     }
 
-    // Realizar transferência
+    // ✅ BUSINESS LOGIC: Execute transfer
     userService.updateUserBalance(fromUserId, -amount);
     userService.updateUserBalance(toUser.id, amount);
 
@@ -76,19 +68,21 @@ class TransferService {
   }
 
   addFavorite(userId, favoritedAccount) {
-    // Validar se conta existe
+    // ✅ BUSINESS LOGIC VALIDATION ONLY (Format validation handled by Joi)
+    
+    // Business rule: Target account exists?
     const favoritedUser = findUserByAccount(favoritedAccount);
     if (!favoritedUser) {
-      throw new Error('Conta de destino não encontrada');
+      throw new Error('Conta não encontrada');
     }
 
-    // Verificar se não está tentando favoritar a si mesmo
+    // Business rule: Can't favorite yourself
     const user = findUserById(userId);
     if (user.account === favoritedAccount) {
       throw new Error('Não é possível favoritar a si mesmo');
     }
 
-    // Verificar se já não está favoritado
+    // Business rule: Already favorited?
     if (isFavorite(userId, favoritedAccount)) {
       throw new Error('Usuário já está nos favoritos');
     }
