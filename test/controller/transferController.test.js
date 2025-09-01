@@ -71,6 +71,25 @@ describe('Transfer Controller', () => {
          expect(response.status).to.equal(400);
          expect(response.body.error).to.equal('Saldo insuficiente');
 
+      }); 
+
+      it('Quando o Saldo e insuficiente recebo code 400 - HTTP', async () => { 
+         const poorUser = await createPoorUser(); // usuario com pouco saldo 
+         const normalUser = await createTestUser(); // usuario com saldo normal
+
+         const token = createTestToken(poorUser.id, poorUser.email, poorUser.account)
+       
+         const transferData = { 
+            toAccount: normalUser.account,
+            amount: 100, //Mais que o saldo disponinivel 10 
+            description: 'transferencia com saldo insuficiente'
+         }
+
+         const response = await createTransfer(token, transferData);
+
+         expect(response.status).to.equal(400);
+         expect(response.body.error).to.equal('Saldo insuficiente');
+
       });
 
       it('Dados Invalidos not passing the account: code 400', async () => { 
