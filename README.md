@@ -66,6 +66,7 @@ API REST desenvolvida em Node.js com Express para aprendizado de testes e automa
 - **chai** - Biblioteca de assertions BDD/TDD para Node.js, fornece uma interface expressiva para escrever testes
 - **sinon** - Biblioteca para criação de spies, stubs e mocks, permitindo testes isolados e simulação de comportamentos
 - **supertest** - Biblioteca específica para testes de APIs HTTP, facilitando testes de integração em aplicações Express
+- **axios** - Cliente HTTP para fazer requisições para APIs externas, usado em testes end-to-end contra servidores reais
 
 ### Utilitários de Desenvolvimento
 - **nodemon** - Utilitário que monitora mudanças no código e reinicia automaticamente o servidor durante o desenvolvimento
@@ -107,7 +108,8 @@ O projeto segue uma arquitetura em camadas inspirada no padrão MVC:
 
 ### Testabilidade
 - **Mocha + Chai**: Sintaxe expressiva e flexível para testes
-- **Supertest**: Testes de API simplificados
+- **Supertest**: Testes de integração diretamente no app Express (sem servidor)
+- **Axios**: Testes end-to-end contra servidor real em execução
 - **Sinon**: Mocking avançado para testes isolados
 - **Separação app/server**: Facilita importação em testes
 - **Organização por camadas**: Testes espelham a estrutura do código
@@ -118,38 +120,6 @@ O projeto segue uma arquitetura em camadas inspirada no padrão MVC:
 - **Separação de responsabilidades**: Cada módulo tem uma função específica
 - **Validação centralizada**: Middlewares reutilizáveis
 
-## 🎯 Por Que Esses Frameworks?
-
-### Express.js vs Alternativas
-**Escolhido por**: Simplicidade, maturidade, grande ecossistema
-- ✅ Comunidade ativa e documentação extensa
-- ✅ Middleware ecosystem robusto
-- ✅ Performance adequada para APIs REST
-- 🆚 **Fastify**: Mais rápido, mas menor ecossistema
-- 🆚 **Koa**: Mais moderno, mas sintaxe mais complexa
-
-### Mocha + Chai vs Jest
-**Escolhido por**: Flexibilidade e controle fino
-- ✅ Configuração mais granular
-- ✅ Melhor para testes de API com Supertest
-- ✅ Sintaxe BDD mais expressiva (Chai)
-- ✅ Separação clara entre runner (Mocha) e assertions (Chai)
-- 🆚 **Jest**: Mais opinativo, mas setup mais simples
-
-### JWT vs Session-based Auth
-**Escolhido por**: Escalabilidade e stateless
-- ✅ Não requer armazenamento de sessão no servidor
-- ✅ Ideal para APIs REST
-- ✅ Facilita arquitetura de microserviços
-- 🆚 **Sessions**: Mais seguro, mas menos escalável
-
-### Joi vs Alternativas
-**Escolhido por**: Expressividade e recursos avançados
-- ✅ Validação declarativa e legível
-- ✅ Mensagens de erro customizáveis
-- ✅ Suporte a validações complexas
-- 🆚 **Yup**: Mais leve, mas menos recursos
-- 🆚 **Express-validator**: Integração direta, mas menos flexível
 
 ## ⚡ Considerações de Performance
 
@@ -200,6 +170,15 @@ pgats-02-api/
 ├── test/
 │   ├── controller/
 │   │   └── transferController.test.js # Testes do controller de transferências
+│   ├── external/
+│   │   └── transferExternal.test.js # Testes externos (servidor real)
+│   ├── fixtures/
+│   │   └── response/            # Exemplos de respostas da API
+│   ├── helpers/
+│   │   ├── authHelper.js        # Helper para autenticação em testes
+│   │   ├── dataHelper.js        # Helper para criação de dados de teste
+│   │   ├── requestHelper.js     # Helper para requisições com Supertest
+│   │   └── externalApiHelper.js # Helper para requisições com Axios
 │   └── example.test.js          # Exemplos de testes da API
 ├── .mocharc.json               # Configuração do Mocha
 ├── app.js                       # Configuração da aplicação Express
@@ -346,6 +325,15 @@ O projeto foi estruturado para facilitar testes com Chai, Mocha e Supertest:
 test/
 ├── controller/              # Testes de controllers específicos
 │   └── transferController.test.js
+├── external/                # Testes end-to-end (servidor real)
+│   └── transferExternal.test.js
+├── fixtures/                # Dados e respostas de exemplo
+│   └── response/
+├── helpers/                 # Utilitários reutilizáveis para testes
+│   ├── authHelper.js        # Autenticação e tokens
+│   ├── dataHelper.js        # Criação de dados de teste
+│   ├── requestHelper.js     # Requisições com Supertest
+│   └── externalApiHelper.js # Requisições com Axios
 ├── service/                 # Testes de serviços (expansível)
 ├── middleware/              # Testes de middlewares (expansível)
 ├── integration/             # Testes de integração (expansível)
@@ -389,9 +377,48 @@ Para expandir os testes, organize por camadas seguindo a estrutura do `src/`:
 {
   "start": "node server.js",
   "dev": "nodemon server.js",
-  "test": "mocha"
+  "test": "mocha test/**/*.test.js",
+  "test-controller": "mocha test/controller/*.test.js",
+  "test-external": "mocha test/external/*.test.js"
 }
 ```
+
+### Tipos de Testes
+
+#### Testes Unitários/Integração (Supertest)
+```bash
+npm test                    # Executa todos os testes
+npm run test-controller     # Apenas testes de controllers
+```
+- **Método**: Importa o `app.js` diretamente
+- **Velocidade**: Rápido (sem inicialização de servidor)
+- **Uso**: Testes unitários e de integração
+
+#### Testes End-to-End (Axios)
+```bash
+npm run test-external       # Testes contra servidor real
+```
+- **Pré-requisito**: API rodando em `http://localhost:3000`
+- **Método**: Requisições HTTP reais via Axios
+- **Velocidade**: Mais lento (rede + servidor)
+- **Uso**: Testes end-to-end, cenários reais
+
+#### Por que Axios foi Necessário?
+
+**Supertest** vs **Axios** - Diferentes propósitos:
+
+- **Supertest**: 
+  - Testa diretamente a aplicação Express **sem iniciar servidor**
+  - Importa o `app.js` e simula requisições HTTP internamente
+  - Ideal para testes unitários e de integração rápidos
+
+- **Axios**: 
+  - Faz requisições HTTP **para um servidor real em execução**
+  - Necessário para testes externos/end-to-end
+  - Simula exatamente como um cliente real usaria a API
+
+**Alternativas ao Axios**: `fetch`, `node-fetch`, `http` nativo
+**Por que Axios**: Sintaxe limpa, Promises nativas, melhor tratamento de erros
 
 ## 🔧 Configuração
 
@@ -416,31 +443,7 @@ A API está configurada para aceitar requisições de qualquer origem em modo de
 - `409` - Conflito (duplicação)
 - `500` - Erro interno do servidor
 
-## 🎯 Cenários de Teste Sugeridos
 
-### Autenticação
-- ✅ Login com credenciais válidas
-- ❌ Login sem email ou senha
-- ❌ Login com credenciais inválidas
-
-### Registro
-- ✅ Registro com dados válidos
-- ❌ Registro com email duplicado
-- ❌ Registro com dados inválidos
-
-### Transferências
-- ✅ Transferência válida para favorito
-- ✅ Transferência válida para não-favorito (≤ R$ 5.000)
-- ❌ Transferência para não-favorito (> R$ 5.000)
-- ❌ Transferência com saldo insuficiente
-- ❌ Transferência para conta inexistente
-- ❌ Transferência para si mesmo
-
-### Favoritos
-- ✅ Adicionar conta válida aos favoritos
-- ❌ Adicionar conta inexistente
-- ❌ Adicionar conta já favoritada
-- ❌ Adicionar própria conta
 
 ## 👥 Contribuição
 

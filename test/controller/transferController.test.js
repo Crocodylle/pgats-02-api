@@ -33,7 +33,7 @@ describe('Transfer Controller', () => {
       sinon.restore();
    });
 
-   describe('POST /transfers', () => {
+      describe('POST /transfers', () => { 
       it('Happy PATH: Transferencia com sucesso', async () => {
 
          // preparar os Dados 
@@ -407,8 +407,8 @@ describe('Transfer Controller', () => {
       const addedFavoriteagain = await addFavorite(token, favorecido.account )
       expect(addedFavoriteagain.status).to.equal(409);
       expect(addedFavoriteagain.body.error).to.contain('Usuário já está nos favoritos');
-   });
-});
+            });
+      });
 
    describe('GET /favorites', () => { 
       it('Listar favoritos sem autenticacao recebe 401')
