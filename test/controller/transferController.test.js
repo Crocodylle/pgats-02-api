@@ -35,22 +35,45 @@ describe('Transfer Controller', () => {
 
    describe('POST /transfers', () => {
       it('Happy PATH: Transferencia com sucesso', async () => {
+
+         // preparar os Dados 
+            // Carregar o arquivo 
+            // Preparar a forma de ignorar os campos dinamicos 
+
+           
             const [user1, user2] = await createMultipleTestUsers(2)
             const token = createTestToken(user1.id, user1.email, user1.account)
             const transferData = getValidTransferData(user2.account);
 
             const response = await createTransfer(token, transferData);
-
+           // console.log(response.body);
             expect(response.status).to.equal(201);
-            expect(response.body.data.amount).to.equal(100);
 
-            expect(response.body).to.have.property('data'); 
-            expect(response.body).to.have.property('message', 'Transferência realizada com sucesso');
-            expect(response.body.data).to.have.property('id');
-            expect(response.body.data).to.have.property('fromAccount', user1.account); 
-            expect(response.body.data).to.have.property('toAccount', user2.account);  
-            expect(response.body.data).to.have.property('amount', transferData.amount);
-            expect(response.body.data).to.have.property('description', transferData.description);
+            // Um expect para comparar a Resposta.body com a String no arquivo 
+            const TransferenciaComSucesso = require('../fixtures/response/TransferenciaComSucesso.json');
+            delete response.body.data.createdAt;
+            delete response.body.data.fromAccount;
+            delete response.body.data.toAccount;
+      
+         
+            delete TransferenciaComSucesso.data.createdAt;
+            delete TransferenciaComSucesso.data.fromAccount;
+            delete TransferenciaComSucesso.data.toAccount;
+           
+            expect(response.body).to.deep.equal(TransferenciaComSucesso);
+            console.log(response.body, "from the api");
+            console.log(TransferenciaComSucesso, "from the file");
+          //  expect(response.body.data.amount).to.equal(100);
+
+          //  expect(response.body).to.have.property('data'); 
+          //  expect(response.body).to.have.property('message', 'Transferência realizada com sucesso');
+          //  expect(response.body.data).to.have.property('id');
+          //  expect(response.body.data).to.have.property('fromAccount', user1.account); 
+          //  expect(response.body.data).to.have.property('toAccount', user2.account);  
+          //  expect(response.body.data).to.have.property('amount', transferData.amount);
+          //  expect(response.body.data).to.have.property('description', transferData.description);
+
+           
       
       });
 

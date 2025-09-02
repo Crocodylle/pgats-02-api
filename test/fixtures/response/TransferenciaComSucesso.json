@@ -1,0 +1,13 @@
+{ 
+      "data":{
+      "id": 1,
+      "fromAccount": "180099",
+      "toAccount": "539003",
+      "amount": 100,
+      "description": "Transferência de teste",
+      "isFavorite": false,
+      "status": "completed",
+      "createdAt": "2025-09-01T13:27:24.760Z"
+},
+"message": "Transferência realizada com sucesso"
+}
