@@ -33,10 +33,35 @@ describe('Transfer Controller', () => {
       sinon.restore();
    });
 
-      describe('POST /transfers', () => { 
+   describe('POST /transfers', () => { 
       it('Happy PATH: Transferencia com sucesso', async () => {
-
          // preparar os Dados 
+            // Carregar o arquivo 
+            // Preparar a forma de ignorar os campos dinamicos 
+
+           
+            const [user1, user2] = await createMultipleTestUsers(2)
+            const token = createTestToken(user1.id, user1.email, user1.account)
+            const transferData = getValidTransferData(user2.account);
+
+            const response = await createTransfer(token, transferData);
+           // console.log(response.body);
+            expect(response.status).to.equal(201);               
+          
+            expect(response.body.data.amount).to.equal(100);
+            expect(response.body).to.have.property('data'); 
+            expect(response.body).to.have.property('message', 'Transferência realizada com sucesso');
+            expect(response.body.data).to.have.property('id');
+            expect(response.body.data).to.have.property('fromAccount', user1.account); 
+            expect(response.body.data).to.have.property('toAccount', user2.account);  
+            expect(response.body.data).to.have.property('amount', transferData.amount);
+            expect(response.body.data).to.have.property('description', transferData.description);
+      
+      
+      });
+
+      it('FIXTURE:Transferencia com sucesso', async () => {
+            // preparar os Dados 
             // Carregar o arquivo 
             // Preparar a forma de ignorar os campos dinamicos 
 
@@ -62,20 +87,10 @@ describe('Transfer Controller', () => {
            
             expect(response.body).to.deep.equal(TransferenciaComSucesso);
             console.log(response.body, "from the api");
-            console.log(TransferenciaComSucesso, "from the file");
-          //  expect(response.body.data.amount).to.equal(100);
+            console.log(TransferenciaComSucesso, "from the file");   
+   
+         });
 
-          //  expect(response.body).to.have.property('data'); 
-          //  expect(response.body).to.have.property('message', 'Transferência realizada com sucesso');
-          //  expect(response.body.data).to.have.property('id');
-          //  expect(response.body.data).to.have.property('fromAccount', user1.account); 
-          //  expect(response.body.data).to.have.property('toAccount', user2.account);  
-          //  expect(response.body.data).to.have.property('amount', transferData.amount);
-          //  expect(response.body.data).to.have.property('description', transferData.description);
-
-           
-      
-      });
 
       it('Quando o Saldo e insuficiente recebo code 400', async () => { 
          const poorUser = await createPoorUser(); // usuario com pouco saldo 
