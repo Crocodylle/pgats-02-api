@@ -33,7 +33,7 @@ describe('User Controller', () => {
          });
       });
    describe('POST /users/register', () => { 
-            it('rrrrr', async () => {
+            it('Create User', async () => {
                // preparar os Dados 
                   // Carregar o arquivo 
                   // Preparar a forma de ignorar os campos dinamicos 
