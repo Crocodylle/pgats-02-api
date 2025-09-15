@@ -1,0 +1,294 @@
+# PGATS-02 GraphQL API - Exemplos de Queries e Mutations
+# Use estes exemplos no GraphQL Playground ou Apollo Studio
+# Endpoint: http://localhost:3000/graphql (combinado) ou http://localhost:4000/graphql (dedicado)
+
+# ============================================================================
+# AUTENTICAÇÃO
+# ============================================================================
+
+# 1. Registrar novo usuário
+mutation RegisterUser {
+  register(input: {
+    name: "João Silva"
+    email: "joao@exemplo.com"
+    password: "senha123"
+  }) {
+    token
+    user {
+      id
+      name
+      email
+      account
+      balance
+      createdAt
+    }
+  }
+}
+
+# 2. Fazer login
+mutation LoginUser {
+  login(input: {
+    email: "joao@exemplo.com"
+    password: "senha123"
+  }) {
+    token
+    user {
+      id
+      name
+      email
+      account
+      balance
+    }
+  }
+}
+
+# ============================================================================
+# QUERIES (requerem autenticação)
+# Headers: { "Authorization": "Bearer SEU_TOKEN_JWT" }
+# ============================================================================
+
+# 3. Obter perfil do usuário autenticado
+query GetMyProfile {
+  me {
+    id
+    name
+    email
+    account
+    balance
+    createdAt
+    updatedAt
+  }
+}
+
+# 4. Listar todos os usuários
+query GetAllUsers {
+  users {
+    id
+    name
+    email
+    account
+    balance
+    createdAt
+  }
+}
+
+# 5. Consultar saldo do usuário
+query GetMyBalance {
+  userBalance {
+    balance
+  }
+}
+
+# 6. Listar transferências do usuário
+query GetMyTransfers {
+  transfers {
+    id
+    fromAccount
+    toAccount
+    amount
+    description
+    isFavorite
+    status
+    createdAt
+  }
+}
+
+# 7. Listar favoritos do usuário
+query GetMyFavorites {
+  favorites {
+    id
+    account
+    name
+    createdAt
+  }
+}
+
+# ============================================================================
+# MUTATIONS (requerem autenticação)
+# Headers: { "Authorization": "Bearer SEU_TOKEN_JWT" }
+# ============================================================================
+
+# 8. Criar transferência
+mutation CreateTransfer {
+  createTransfer(input: {
+    toAccount: "123456"
+    amount: 150.75
+    description: "Pagamento de serviços"
+  }) {
+    id
+    fromAccount
+    toAccount
+    amount
+    description
+    isFavorite
+    status
+    createdAt
+  }
+}
+
+# 9. Adicionar usuário aos favoritos
+mutation AddToFavorites {
+  addFavorite(input: {
+    account: "123456"
+  }) {
+    id
+    account
+    name
+    createdAt
+  }
+}
+
+# 10. Remover favorito
+mutation RemoveFavorite {
+  removeFavorite(id: "1")
+}
+
+# ============================================================================
+# QUERIES AVANÇADAS - Seleção específica de campos
+# ============================================================================
+
+# 11. Query otimizada - apenas dados necessários
+query OptimizedUserQuery {
+  me {
+    name
+    balance
+  }
+  favorites {
+    account
+    name
+  }
+}
+
+# 12. Query para relatório de transferências
+query TransferReport {
+  transfers {
+    amount
+    description
+    status
+    createdAt
+    isFavorite
+  }
+  userBalance {
+    balance
+  }
+}
+
+# ============================================================================
+# EXEMPLO DE FLUXO COMPLETO
+# ============================================================================
+
+# Passo 1: Registrar usuário A
+mutation RegisterUserA {
+  register(input: {
+    name: "Maria Santos"
+    email: "maria@exemplo.com"
+    password: "senha123"
+  }) {
+    token
+    user {
+      id
+      name
+      account
+      balance
+    }
+  }
+}
+
+# Passo 2: Registrar usuário B
+mutation RegisterUserB {
+  register(input: {
+    name: "Pedro Lima"
+    email: "pedro@exemplo.com"
+    password: "senha456"
+  }) {
+    token
+    user {
+      id
+      name
+      account
+      balance
+    }
+  }
+}
+
+# Passo 3: Como usuário A, adicionar B aos favoritos
+# (usar token do usuário A)
+mutation AddUserBToFavorites {
+  addFavorite(input: {
+    account: "CONTA_DO_USUARIO_B"
+  }) {
+    id
+    account
+    name
+  }
+}
+
+# Passo 4: Como usuário A, fazer transferência para B
+# (usar token do usuário A)
+mutation TransferToFavorite {
+  createTransfer(input: {
+    toAccount: "CONTA_DO_USUARIO_B"
+    amount: 6000.00
+    description: "Transferência para favorito (sem limite)"
+  }) {
+    id
+    amount
+    description
+    isFavorite
+    status
+  }
+}
+
+# Passo 5: Verificar saldo e transferências
+# (usar token do usuário A)
+query CheckAfterTransfer {
+  userBalance {
+    balance
+  }
+  transfers {
+    toAccount
+    amount
+    description
+    isFavorite
+    status
+    createdAt
+  }
+}
+
+# ============================================================================
+# ERRORS - Exemplos de situações que geram erros
+# ============================================================================
+
+# Erro: Transferência sem autenticação
+mutation TransferWithoutAuth {
+  createTransfer(input: {
+    toAccount: "123456"
+    amount: 100
+  }) {
+    id
+  }
+}
+# Resultado esperado: "Você deve estar autenticado para realizar esta operação"
+
+# Erro: Transferência acima do limite para não-favorito
+mutation TransferOverLimit {
+  createTransfer(input: {
+    toAccount: "CONTA_NAO_FAVORITA"
+    amount: 6000.00
+    description: "Tentativa de transferência alta"
+  }) {
+    id
+  }
+}
+# Resultado esperado: "Transferências acima de R$ 5.000,00 só podem ser realizadas para usuários favorecidos"
+
+# Erro: Login com credenciais inválidas
+mutation InvalidLogin {
+  login(input: {
+    email: "usuario@inexistente.com"
+    password: "senhaerrada"
+  }) {
+    token
+  }
+}
+# Resultado esperado: "Credenciais inválidas"
