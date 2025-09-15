@@ -197,8 +197,9 @@ pgats-02-api/
 ├── appWithGraphQL.js            # 🆕 Configuração integrada GraphQL + REST
 ├── examples.http               # Exemplos de requisições HTTP
 ├── examples.graphql             # 🆕 Exemplos de queries GraphQL
+├── README.md                   # Documentação principal
+├── FLUXO-REQUISICOES.md        # 🎓 Guia didático do fluxo de requisições
 ├── package.json                # Dependências e scripts
-└── README.md                   # Documentação
 ```
 
 ## 🚀 Como Executar
@@ -248,6 +249,8 @@ pgats-02-api/
    - GraphQL Info: http://localhost:3000/graphql/info
 
 ## 📚 Documentação das APIs
+
+> 🎓 **Para Iniciantes:** Quer entender como funciona o "cérebro" da API? Leia o **[Guia Didático do Fluxo de Requisições](./FLUXO-REQUISICOES.md)** - uma explicação visual e simples de como suas requisições viajam pelo código!
 
 ### API REST
 A documentação completa da API REST está disponível via Swagger UI em:
