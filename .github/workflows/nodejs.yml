@@ -20,8 +20,12 @@ jobs:
          node-version: '20.x'
     - run: npm install
 
-    - name: Run tests controller
+    - name: Run tests controller Rest
+      run: npm run test-controllerRest
+    - name: Run tests controller GraphQL
       run: npm run test-controller 
+    - name: Run tests controller
+      run: npm run test-controller   
 
     - name: Run the API 
       run: npm start &
