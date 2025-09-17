@@ -1,6 +1,10 @@
 # PGATS-02 API
 
-API REST desenvolvida em Node.js com Express para aprendizado de testes e automação a nível de API. Simula um sistema básico de transferências bancárias com autenticação JWT e regras de negócio específicas.
+API REST e GraphQL desenvolvida em Node.js com Express e Apollo Server para aprendizado de testes e automação a nível de API. Simula um sistema básico de transferências bancárias com autenticação JWT e regras de negócio específicas.
+
+## 🌟 Novidade: GraphQL API
+
+Esta API agora oferece suporte completo ao GraphQL além da API REST tradicional. Você pode usar ambas as interfaces para acessar os mesmos dados e funcionalidades.
 
 ## 📋 Funcionalidades
 
@@ -50,6 +54,8 @@ API REST desenvolvida em Node.js com Express para aprendizado de testes e automa
 ### Runtime e Framework Principal
 - **Node.js** - Runtime JavaScript para execução do código no servidor
 - **Express.js** - Framework web minimalista e flexível para Node.js, usado para criar APIs REST de forma rápida e eficiente
+- **Apollo Server** - Servidor GraphQL de alto desempenho para Node.js, oferecendo uma interface moderna e flexível para consultas de dados
+- **GraphQL** - Linguagem de consulta para APIs que permite buscar exatamente os dados necessários
 
 ### Segurança e Autenticação
 - **bcryptjs** - Biblioteca para hash de senhas, garantindo que as senhas sejam armazenadas de forma segura através de criptografia
@@ -87,8 +93,9 @@ O projeto segue uma arquitetura em camadas inspirada no padrão MVC:
 - **Config** (`src/config/`) - Configurações da aplicação (Swagger, etc.)
 
 ### Arquitetura para Testes
-- **app.js** - Aplicação Express sem o método `listen()`, ideal para importação em testes
-- **server.js** - Servidor HTTP que importa o app e inicia o servidor
+- **app.js** - Aplicação Express REST sem o método `listen()`, ideal para importação em testes
+- **appWithGraphQL.js** - Configuração GraphQL + REST, exporta apps separados para testes
+- **server.js** - Servidor principal que inicia ambas as APIs
 - **test/** - Pasta dedicada para todos os arquivos de teste
   - **test/controller/** - Testes específicos dos controllers
   - **test/example.test.js** - Exemplos de testes da API completa
@@ -152,6 +159,10 @@ pgats-02-api/
 │   │   └── transferController.js # Controller de transferências
 │   ├── database/
 │   │   └── index.js             # Banco de dados em memória
+│   ├── graphql/                 # 🆕 Configuração GraphQL
+│   │   ├── typeDefs.js          # Definições de tipos GraphQL
+│   │   ├── resolvers.js         # Resolvers GraphQL
+│   │   └── graphqlApp.js        # App GraphQL para testes
 │   ├── middlewares/
 │   │   ├── auth.js              # Middleware de autenticação
 │   │   └── validation.js        # Middleware de validação
@@ -181,11 +192,14 @@ pgats-02-api/
 │   │   └── externalApiHelper.js # Helper para requisições com Axios
 │   └── example.test.js          # Exemplos de testes da API
 ├── .mocharc.json               # Configuração do Mocha
-├── app.js                       # Configuração da aplicação Express
-├── server.js                    # Servidor HTTP
+├── app.js                       # Configuração da aplicação Express (REST) - para testes
+├── server.js                    # Servidor principal (REST + GraphQL)
+├── appWithGraphQL.js            # 🆕 Configuração integrada GraphQL + REST
 ├── examples.http               # Exemplos de requisições HTTP
+├── examples.graphql             # 🆕 Exemplos de queries GraphQL
+├── README.md                   # Documentação principal
+├── FLUXO-REQUISICOES.md        # 🎓 Guia didático do fluxo de requisições
 ├── package.json                # Dependências e scripts
-└── README.md                   # Documentação
 ```
 
 ## 🚀 Como Executar
@@ -196,6 +210,8 @@ pgats-02-api/
 
 ### Versões das Dependências Principais
 - **Express**: ^4.18.2 - Framework web estável e maduro
+- **Apollo Server**: ^5.0.0 - Servidor GraphQL moderno
+- **GraphQL**: ^16.11.0 - Implementação padrão da linguagem
 - **Mocha**: ^11.7.1 - Framework de testes atualizado
 - **Chai**: ^6.0.1 - Biblioteca de assertions moderna
 - **JWT**: ^9.0.2 - Implementação segura de tokens
@@ -215,24 +231,168 @@ pgats-02-api/
 
 3. **Inicie o servidor:**
    ```bash
-   # Modo de desenvolvimento (com nodemon)
-   npm run dev
-   
-   # Modo de produção
-   npm start
+   # Inicia ambas as APIs (REST + GraphQL)
+   npm start                  # Produção
+   npm run dev               # Desenvolvimento
    ```
 
-4. **Acesse a aplicação:**
+4. **Acesse as aplicações:**
+
+   **API REST (porta 3000):**
    - API: http://localhost:3000
-   - Documentação: http://localhost:3000/api-docs
+   - Documentação Swagger: http://localhost:3000/api-docs
    - Health Check: http://localhost:3000/health
+   
+   **API GraphQL (porta 4000):**
+   - GraphQL Endpoint: http://localhost:4000/
+   - GraphQL Playground: http://localhost:4000/ (acesse no navegador)
+   - GraphQL Info: http://localhost:3000/graphql/info
 
-## 📚 Documentação da API
+## 📚 Documentação das APIs
 
-A documentação completa da API está disponível via Swagger UI em:
+> 🎓 **Para Iniciantes:** Quer entender como funciona o "cérebro" da API? Leia o **[Guia Didático do Fluxo de Requisições](./FLUXO-REQUISICOES.md)** - uma explicação visual e simples de como suas requisições viajam pelo código!
+
+### API REST
+A documentação completa da API REST está disponível via Swagger UI em:
 **http://localhost:3000/api-docs**
 
-### Endpoints Principais
+### API GraphQL
+A API GraphQL oferece uma interface moderna para consultas e mutações:
+
+**Endpoints GraphQL:**
+- **Servidor GraphQL**: http://localhost:4000/
+- **Playground**: http://localhost:4000/ (acesse diretamente no navegador)
+- **Informações**: http://localhost:3000/graphql/info
+
+**GraphQL Playground:** Acesse o endpoint GraphQL diretamente no navegador para usar o playground interativo.
+
+#### Queries Disponíveis
+```graphql
+# Perfil do usuário autenticado
+query {
+  me {
+    id
+    name
+    email
+    account
+    balance
+  }
+}
+
+# Listar todos os usuários
+query {
+  users {
+    id
+    name
+    email
+    account
+  }
+}
+
+# Saldo do usuário
+query {
+  userBalance {
+    balance
+  }
+}
+
+# Transferências do usuário
+query {
+  transfers {
+    id
+    fromAccount
+    toAccount
+    amount
+    description
+    status
+    createdAt
+  }
+}
+
+# Favoritos do usuário
+query {
+  favorites {
+    id
+    account
+    name
+    createdAt
+  }
+}
+```
+
+#### Mutations Disponíveis
+```graphql
+# Login
+mutation {
+  login(input: {
+    email: "usuario@email.com"
+    password: "senha123"
+  }) {
+    token
+    user {
+      id
+      name
+      email
+    }
+  }
+}
+
+# Registro
+mutation {
+  register(input: {
+    name: "Novo Usuário"
+    email: "novo@email.com"
+    password: "senha123"
+  }) {
+    token
+    user {
+      id
+      name
+      email
+    }
+  }
+}
+
+# Criar transferência
+mutation {
+  createTransfer(input: {
+    toAccount: "123456"
+    amount: 100.50
+    description: "Pagamento"
+  }) {
+    id
+    fromAccount
+    toAccount
+    amount
+    description
+    status
+  }
+}
+
+# Adicionar favorito
+mutation {
+  addFavorite(input: {
+    account: "123456"
+  }) {
+    id
+    account
+    name
+  }
+}
+
+# Remover favorito
+mutation {
+  removeFavorite(id: "1")
+}
+```
+
+#### Autenticação GraphQL
+Para usar queries e mutations que requerem autenticação, inclua o token JWT no header:
+```
+Authorization: Bearer SEU_TOKEN_JWT
+```
+
+### Endpoints REST Principais
 
 #### Autenticação
 - `POST /auth/login` - Realizar login
@@ -254,7 +414,9 @@ A documentação completa da API está disponível via Swagger UI em:
 
 ## 🧪 Exemplos de Uso
 
-### 1. Registrar Usuário
+### API REST
+
+#### 1. Registrar Usuário
 ```bash
 curl -X POST http://localhost:3000/users/register \
   -H "Content-Type: application/json" \
@@ -265,7 +427,7 @@ curl -X POST http://localhost:3000/users/register \
   }'
 ```
 
-### 2. Fazer Login
+#### 2. Fazer Login
 ```bash
 curl -X POST http://localhost:3000/auth/login \
   -H "Content-Type: application/json" \
@@ -275,7 +437,7 @@ curl -X POST http://localhost:3000/auth/login \
   }'
 ```
 
-### 3. Realizar Transferência
+#### 3. Realizar Transferência
 ```bash
 curl -X POST http://localhost:3000/transfers \
   -H "Content-Type: application/json" \
@@ -287,7 +449,7 @@ curl -X POST http://localhost:3000/transfers \
   }'
 ```
 
-### 4. Adicionar Favorito
+#### 4. Adicionar Favorito
 ```bash
 curl -X POST http://localhost:3000/transfers/favorites \
   -H "Content-Type: application/json" \
@@ -295,6 +457,112 @@ curl -X POST http://localhost:3000/transfers/favorites \
   -d '{
     "account": "123456"
   }'
+```
+
+### API GraphQL
+
+#### 1. Registrar Usuário
+```graphql
+# Acesse http://localhost:4000/ no navegador e execute:
+mutation {
+  register(input: {
+    name: "João Silva"
+    email: "joao@email.com"
+    password: "senha123"
+  }) {
+    token
+    user {
+      id
+      name
+      email
+      account
+      balance
+    }
+  }
+}
+```
+
+#### 2. Fazer Login
+```graphql
+mutation {
+  login(input: {
+    email: "joao@email.com"
+    password: "senha123"
+  }) {
+    token
+    user {
+      name
+      account
+      balance
+    }
+  }
+}
+```
+
+#### 3. Consultar Perfil (requer autenticação)
+```graphql
+# No header HTTP Headers: {"Authorization": "Bearer SEU_TOKEN_JWT"}
+query {
+  me {
+    id
+    name
+    email
+    account
+    balance
+  }
+}
+```
+
+#### 4. Realizar Transferência (requer autenticação)
+```graphql
+mutation {
+  createTransfer(input: {
+    toAccount: "123456"
+    amount: 100.50
+    description: "Pagamento GraphQL"
+  }) {
+    id
+    fromAccount
+    toAccount
+    amount
+    description
+    status
+    isFavorite
+  }
+}
+```
+
+#### 5. Adicionar Favorito (requer autenticação)
+```graphql
+mutation {
+  addFavorite(input: {
+    account: "123456"
+  }) {
+    id
+    account
+    name
+  }
+}
+```
+
+#### 6. Consultar Dados Combinados (requer autenticação)
+```graphql
+query {
+  me {
+    name
+    balance
+  }
+  transfers {
+    amount
+    description
+    status
+    createdAt
+  }
+  favorites {
+    account
+    name
+  }
+}
 ```
 
 ## 🔑 Autenticação
@@ -316,9 +584,9 @@ A aplicação utiliza um banco de dados **em memória** (variáveis JavaScript) 
 - Contas são geradas automaticamente com 6 dígitos
 - Não há dados pré-carregados
 
-## 🧪 Testando com Chai/Mocha + Supertest
+## 🧪 Testando as APIs
 
-O projeto foi estruturado para facilitar testes com Chai, Mocha e Supertest:
+O projeto foi estruturado para facilitar testes tanto da API REST quanto GraphQL com Chai, Mocha e Supertest:
 
 ### Estrutura de Testes Organizada
 ```
@@ -340,14 +608,14 @@ test/
 └── example.test.js          # Exemplos gerais da API
 ```
 
-### Exemplo de Teste
+### Exemplo de Teste REST
 ```javascript
-// Exemplo de teste
+// Teste da API REST
 const request = require('supertest');
 const { expect } = require('chai');
-const app = require('./app'); // Importa apenas o app, sem o listen()
+const app = require('./app'); // Importa apenas o app REST, sem o listen()
 
-describe('Auth', () => {
+describe('Auth REST', () => {
   it('should login successfully', async () => {
     const response = await request(app)
       .post('/auth/login')
@@ -359,6 +627,39 @@ describe('Auth', () => {
     expect(response.status).to.equal(200);
     expect(response.body).to.have.property('data');
     expect(response.body.data).to.have.property('token');
+  });
+});
+```
+
+### Exemplo de Teste GraphQL
+```javascript
+// Teste da API GraphQL (precisa do servidor rodando)
+const axios = require('axios');
+const { expect } = require('chai');
+
+describe('Auth GraphQL', () => {
+  it('should login successfully', async () => {
+    const query = `
+      mutation {
+        login(input: {
+          email: "test@email.com"
+          password: "password123"
+        }) {
+          token
+          user {
+            name
+            email
+          }
+        }
+      }
+    `;
+    
+    const response = await axios.post('http://localhost:4000/', { 
+      query 
+    });
+    
+    expect(response.data.data.login).to.have.property('token');
+    expect(response.data.data.login.user).to.have.property('name');
   });
 });
 ```
@@ -382,6 +683,13 @@ Para expandir os testes, organize por camadas seguindo a estrutura do `src/`:
   "test-external": "mocha test/external/*.test.js"
 }
 ```
+
+### 🚀 Scripts Principais
+- **`npm start`** - Inicia ambos os servidores (REST na porta 3000 + GraphQL na porta 4000)
+- **`npm run dev`** - Desenvolvimento com hot reload para ambas as APIs
+- **`npm test`** - Executa todos os testes
+- **`npm run test-controller`** - Testes específicos dos controllers  
+- **`npm run test-external`** - Testes end-to-end contra servidor real
 
 ### Tipos de Testes
 
@@ -459,4 +767,26 @@ MIT License - veja o arquivo LICENSE para detalhes.
 
 ---
 
-**Desenvolvido para o curso PGATS-02 - Aprendizado de Testes e Automação de APIs** 🚀
+**Desenvolvido para o curso PGATS-02 - Aprendizado de Testes e Automação de APIs com REST e GraphQL** 🚀
+
+## 🔗 Links Úteis
+
+### Documentação Oficial
+- [Apollo Server](https://www.apollographql.com/docs/apollo-server/) - Documentação oficial do Apollo Server
+- [GraphQL](https://graphql.org/learn/) - Tutorial oficial do GraphQL
+- [Express.js](https://expressjs.com/) - Documentação do Express
+
+### Ferramentas de Teste
+- [Apollo Studio](https://studio.apollographql.com/) - IDE online para GraphQL
+- [GraphQL Playground](https://github.com/graphql/graphql-playground) - IDE GraphQL
+- [Postman](https://www.postman.com/) - Cliente REST
+- [Insomnia](https://insomnia.rest/) - Cliente REST e GraphQL
+
+### Aprendizado
+- [How to GraphQL](https://www.howtographql.com/) - Tutorial completo de GraphQL
+- [Apollo Server Tutorial](https://www.apollographql.com/docs/tutorial/introduction/) - Tutorial oficial
+- [GraphQL Best Practices](https://graphql.org/learn/best-practices/) - Melhores práticas
+
+---
+
+**🎯 Objetivo Alcançado:** API completa com REST e GraphQL, usando os mesmos services e lógica de negócio, pronta para testes automatizados!
