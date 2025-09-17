@@ -5,7 +5,7 @@ const sinon = require('sinon');
 const { createTestToken, 
         createExpiredToken,
         createInvalidToken
-      } = require('../helpers/authHelper');
+      } = require('../../helpers/authHelper');
 
 
 const {  
@@ -13,7 +13,7 @@ const {
       createTransfer,
       addFavorite,
       TestUnauthorized
-} = require('../helpers/requestHelper');
+} = require('../../helpers/requestHelper');
 
 //const { addFavorite } = require('../../src/services/transferService');
 

@@ -5,7 +5,7 @@ const sinon = require('sinon');
 const { createTestToken, 
         createExpiredToken,
         createInvalidToken
-      } = require('../helpers/authHelper');
+      } = require('../../helpers/authHelper');
 
 const { 
       createTestUser,
@@ -15,14 +15,14 @@ const {
       getValidTransferData,
       clearDatabase,
       getInvalidTransferData
-} = require('../helpers/dataHelper');
+} = require('../../helpers/dataHelper');
 
 const {  
       authenticatedPost,
       createTransfer,
       addFavorite,
       TestUnauthorized
-} = require('../helpers/requestHelper');
+} = require('../../helpers/requestHelper');
 
 //const { addFavorite } = require('../../src/services/transferService');
 
@@ -75,7 +75,7 @@ describe('Transfer Controller', () => {
             expect(response.status).to.equal(201);
 
             // Um expect para comparar a Resposta.body com a String no arquivo 
-            const TransferenciaComSucesso = require('../fixtures/response/TransferenciaComSucesso.json');
+            const TransferenciaComSucesso = require('../../fixtures/response/TransferenciaComSucesso.json');
             delete response.body.data.createdAt;
             delete response.body.data.fromAccount;
             delete response.body.data.toAccount;
