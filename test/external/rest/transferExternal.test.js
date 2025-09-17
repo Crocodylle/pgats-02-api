@@ -12,7 +12,7 @@ const {
     createTestUsers,
     cleanupTestData,
     BASE_URL
-} = require('../helpers/externalApiHelper');
+} = require('../../helpers/externalApiHelper');
 
 describe('🌐 Transfer Controller - API Externa Real', () => {
     

@@ -54,6 +54,13 @@ Imagine que você é um **detetive** 🕵️ seguindo o rastro de uma requisiç�
    ▼
 🛣️ ROUTES (src/routes/authRoutes.js)
    │ "Ah! É para /auth/login"
+   │ "Vou executar middlewares primeiro!"
+   ▼
+🛡️ MIDDLEWARES (src/middlewares/validation.js)
+   │ "Validando dados com Joi..."
+   │ "Email válido? ✅"
+   │ "Senha tem 6+ caracteres? ✅"
+   │ "Passou na validação!"
    ▼
 🎯 CONTROLLER (src/controllers/authController.js)
    │ "Vou processar esse login!"
@@ -87,7 +94,7 @@ Imagine que você é um **detetive** 🕵️ seguindo o rastro de uma requisiç�
    │ "Login realizado com sucesso! 🎉"
 ```
 
-### 🔍 Exemplo Prático - Login REST
+### 🔍 Exemplo Prático - Login REST (com Validation Middleware)
 
 **1. Requisição chega:**
 ```javascript
@@ -118,15 +125,34 @@ app.use(express.json());      // ✅ Lê o JSON do body
 app.use('/auth', authRoutes); // 🛣️ Direciona para rota
 ```
 
-**4. Route decide o destino:**
+**4. Route executa middlewares:**
 ```javascript
 // 🛣️ src/routes/authRoutes.js
-router.post('/login', authController.login);
-//           ↑        ↑
-//       endpoint   função do controller
+router.post('/login', validateRequest(loginSchema), authController.login);
+//           ↑                    ↑                        ↑
+//       endpoint            middleware                controller
 ```
 
-**5. Controller processa:**
+**5. Middleware valida dados:**
+```javascript
+// 🛡️ src/middlewares/validation.js
+const loginSchema = Joi.object({
+  email: Joi.string().email().required(),     // 📧 Email válido?
+  password: Joi.string().min(6).required()    // 🔐 Senha 6+ chars?
+});
+
+const validateRequest = (schema) => {
+  return (req, res, next) => {
+    const { error } = schema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ error: 'Dados inválidos' }); // ❌ Para aqui!
+    }
+    next(); // ✅ Passa para o próximo (controller)
+  };
+};
+```
+
+**6. Controller processa:**
 ```javascript
 // 🎯 src/controllers/authController.js
 async login(req, res) {
@@ -140,7 +166,7 @@ async login(req, res) {
 }
 ```
 
-**6. Service coordena:**
+**7. Service coordena:**
 ```javascript
 // 🔧 src/services/authService.js
 async login(email, password) {
@@ -162,7 +188,7 @@ const findUserByEmail = (email) => {
 };
 ```
 
-**8. Model processa:**
+**9. Model processa:**
 ```javascript
 // 🏗️ src/models/User.js
 class User {
@@ -183,7 +209,7 @@ class User {
 }
 ```
 
-**9. Resposta volta:**
+**10. Resposta volta:**
 ```javascript
 // 📤 SAÍDA (para o usuário)
 HTTP 200 OK
@@ -198,6 +224,76 @@ HTTP 200 OK
       "account": "123456",
       "balance": 1000.00
     }
+  }
+}
+```
+
+### 🔍 Exemplo Prático - Transferência REST (com Auth + Validation Middlewares)
+
+**Requisição que requer autenticação:**
+```javascript
+// 📥 ENTRADA (Postman/Browser)
+POST http://localhost:3000/transfers
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+{
+  "toAccount": "123456",
+  "amount": 150.75,
+  "description": "Pagamento"
+}
+```
+
+**Fluxo com múltiplos middlewares:**
+```javascript
+// 🛣️ src/routes/transferRoutes.js
+router.post('/', authenticateToken, validateRequest(transferSchema), transferController.createTransfer);
+//           ↑            ↑                    ↑                          ↑
+//       endpoint    middleware 1        middleware 2                controller
+```
+
+**1. Middleware de Autenticação executa primeiro:**
+```javascript
+// 🛡️ src/middlewares/auth.js
+const authenticateToken = (req, res, next) => {
+  const token = req.headers['authorization']?.split(' ')[1]; // Extrai token
+  
+  if (!token) {
+    return res.status(401).json({ error: 'Token requerido' }); // ❌ Para aqui!
+  }
+  
+  try {
+    const decoded = authService.verifyToken(token);  // 🔐 Verifica JWT
+    req.user = decoded;  // 📦 Adiciona user no req para próximos middlewares
+    next();  // ✅ Passa para próximo middleware
+  } catch (error) {
+    return res.status(403).json({ error: 'Token inválido' }); // ❌ Para aqui!
+  }
+};
+```
+
+**2. Middleware de Validação executa em seguida:**
+```javascript
+// 🛡️ src/middlewares/validation.js - Valida dados da transferência
+const transferSchema = Joi.object({
+  toAccount: Joi.string().length(6).pattern(/^\d+$/).required(),  // 🏦 Conta válida?
+  amount: Joi.number().positive().required(),                     // 💰 Valor positivo?
+  description: Joi.string().max(255).optional()                   // 📝 Descrição ok?
+});
+// Se passou na validação, chama next() → controller
+```
+
+**3. Controller recebe dados validados e user autenticado:**
+```javascript
+// 🎯 src/controllers/transferController.js
+async createTransfer(req, res) {
+  try {
+    const userId = req.user.userId;     // 👤 User vem do middleware auth
+    const transferData = req.body;      // 📄 Dados já validados pelo middleware
+    const result = await transferService.createTransfer(userId, transferData);
+    res.json({ success: true, data: result });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 }
 ```
@@ -558,6 +654,10 @@ query {
 │   │   ├── userRoutes.js        # Rotas de usuário
 │   │   └── transferRoutes.js    # Rotas de transferência
 │   │
+│   ├── 📁 middlewares/          # 🛡️ "Seguranças" - Verificam antes de entrar
+│   │   ├── auth.js              # 🔐 Verifica se está logado (JWT)
+│   │   └── validation.js        # ✅ Verifica se dados estão corretos (Joi)
+│   │
 │   ├── 📁 controllers/          # 🎯 "Gerentes" - Coordenam
 │   │   ├── authController.js    # Gerencia autenticação
 │   │   ├── userController.js    # Gerencia usuários
@@ -594,7 +694,8 @@ query {
 **Gabarito:**
 ```
 📥 Postman → 🚪 server.js → 📋 app.js → 🛣️ userRoutes.js → 
-🎯 userController.js → 🔧 userService.js → 💾 database/index.js → 🏗️ User.js (Model)
+🛡️ validation.js (middleware) → 🎯 userController.js → 🔧 userService.js → 
+💾 database/index.js → 🏗️ User.js (Model)
 ```
 
 ### 🎯 Exercício 2: Seguir o Fluxo GraphQL  
@@ -627,6 +728,17 @@ query {
 
 **Questão:** Qual é mais eficiente e por quê?
 
+### 🎯 Exercício 4: Entendendo os Middlewares
+1. Faça uma requisição **sem token**: `POST /transfers`
+2. Faça uma requisição **com dados inválidos**: `POST /auth/login` com email malformado
+3. **Desafio:** Em qual middleware cada requisição vai "parar"?
+
+**Gabarito:**
+```
+Sem token: 🛡️ auth.js middleware → ❌ Status 401 "Token requerido"
+Dados inválidos: 🛡️ validation.js middleware → ❌ Status 400 "Email inválido"  
+```
+
 ---
 
 ## 🏆 Parabéns!
@@ -652,6 +764,7 @@ Agora você entende como funciona o **cérebro** da nossa API! 🧠
 
 - **🚪 Server**: Como o porteiro de um prédio - decide quem entra
 - **🛣️ Routes**: Como placas de trânsito - mostram o caminho
+- **🛡️ Middlewares**: Como seguranças de boate - verificam se você pode entrar antes de passar
 - **🎯 Controller**: Como um gerente - coordena tudo
 - **🔧 Service**: Como um especialista - faz o trabalho difícil  
 - **🏗️ Model**: Como um molde de biscoito - define o formato dos dados e como eles se comportam
