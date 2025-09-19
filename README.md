@@ -40,11 +40,29 @@ API REST e GraphQL para aprendizado de testes e automação. Simula um sistema d
 
 ## 🛠️ Tecnologias
 
-- **Node.js + Express** - API REST
-- **Apollo Server + GraphQL** - API GraphQL  
-- **JWT + bcryptjs** - Autenticação segura
-- **Mocha + Chai + Supertest** - Testes automatizados
-- **Swagger** - Documentação interativa
+### Core
+- **Node.js** (v14+) - Runtime JavaScript
+- **Express** (v4.18.2) - Framework web para API REST
+- **Apollo Server** (v5.0.0) - Servidor GraphQL
+- **GraphQL** (v16.11.0) - Linguagem de consulta
+
+### Segurança & Autenticação
+- **bcryptjs** (v2.4.3) - Hash de senhas
+- **jsonwebtoken** (v9.0.2) - JWT para autenticação
+- **joi** (v17.11.0) - Validação de dados
+- **cors** (v2.8.5) - Cross-Origin Resource Sharing
+
+### Testes & Qualidade
+- **Mocha** (v11.7.1) - Framework de testes
+- **Chai** (v6.0.1) - Biblioteca de assertions
+- **Supertest** (v6.3.4) - Testes HTTP para Express
+- **Axios** (v1.11.0) - Cliente HTTP para testes externos
+- **Sinon** (v21.0.0) - Mocks, spies e stubs
+- **Mochawesome** (v7.1.3) - Relatórios HTML de testes
+
+### Documentação & Desenvolvimento
+- **Swagger** (swagger-jsdoc + swagger-ui-express) - Documentação API
+- **Nodemon** (v3.0.2) - Hot reload em desenvolvimento
 
 ## 🚀 Como Executar
 
@@ -177,15 +195,60 @@ A API utiliza JWT (JSON Web Token). Para endpoints protegidos:
 ## 📝 Scripts Disponíveis
 
 ### 🚀 Scripts Principais
-- **`npm start`** - Inicia ambos os servidores (REST:3000 + GraphQL:4000)
-- **`npm run dev`** - Desenvolvimento com hot reload
+```bash
+npm start                     # Inicia servidores (REST:3000 + GraphQL:4000)
+npm run dev                   # Desenvolvimento com hot reload
+```
 
 ### 🧪 Scripts de Teste
-- **`npm test`** - Executa todos os testes
-- **`npm run test-controller`** - Testes de controllers
-- **`npm run test-external`** - Testes end-to-end (precisa do servidor rodando)
-- **`npm run test-externalRest`** - Apenas testes REST externos
-- **`npm run test-externalGraphql`** - Apenas testes GraphQL externos
+
+#### Todos os Testes
+```bash
+npm test                      # Executa todos os testes (REST + GraphQL)
+```
+
+#### Testes por Categoria
+```bash
+npm run test-controller       # Todos os testes de controllers
+npm run test-external         # Todos os testes externos (precisa servidor rodando)
+```
+
+#### Testes Específicos por Tipo
+```bash
+# Controllers (Testes rápidos com Supertest)
+npm run test-controllerRest      # Apenas controllers REST
+npm run test-controllerGraphql   # Apenas controllers GraphQL
+
+# Externos (Testes end-to-end com Axios)
+npm run test-externalRest        # Apenas externos REST
+npm run test-externalGraphql     # Apenas externos GraphQL
+```
+
+### 📊 Relatórios de Teste
+Todos os testes geram relatórios HTML via Mochawesome:
+- **Arquivo**: `mochawesome-report/mochawesome.html`
+- **Localização**: Pasta raiz do projeto
+- **Conteúdo**: Resultados detalhados, tempo de execução, estatísticas
+
+## 🧪 Estratégias de Teste
+
+### Testes Unitários/Integração (Supertest)
+- **Controllers REST**: Importa `app.js` diretamente
+- **Velocidade**: Rápido (sem servidor HTTP)
+- **Uso**: Validação de lógica de negócio
+
+### Testes End-to-End (Axios)
+- **REST**: Requisições HTTP reais para `localhost:3000`
+- **GraphQL**: Requisições HTTP reais para `localhost:4000`
+- **Pré-requisito**: `npm start` deve estar rodando
+- **Uso**: Validação de comportamento real
+
+### Helpers Especializados
+- **`authHelper.js`**: Tokens JWT para testes
+- **`dataHelper.js`**: Criação de dados de teste
+- **`requestHelper.js`**: Requisições REST com Supertest
+- **`externalApiHelper.js`**: Requisições REST com Axios
+- **`graphqlApiHelper.js`**: Requisições GraphQL com Axios
 
 ## 💾 Banco de Dados
 
@@ -203,6 +266,30 @@ JWT_SECRET=your-secret-key
 NODE_ENV=development
 ```
 
+### Estrutura de Pastas
+```
+pgats-02-api/
+├── src/                     # Código fonte
+│   ├── controllers/         # Controllers REST
+│   ├── graphql/            # Configuração GraphQL
+│   ├── services/           # Lógica de negócio
+│   ├── models/             # Modelos de dados
+│   ├── routes/             # Rotas REST
+│   └── middlewares/        # Middlewares
+├── test/                   # Testes organizados
+│   ├── controller/         # Testes de controllers
+│   │   ├── rest/           # Controllers REST
+│   │   └── graphql/        # Controllers GraphQL
+│   ├── external/           # Testes end-to-end
+│   │   ├── rest/           # Externos REST
+│   │   └── graphql/        # Externos GraphQL
+│   ├── helpers/            # Utilitários de teste
+│   └── fixtures/           # Dados de teste
+├── examples.http           # Exemplos de requisições REST
+├── examples.graphql        # Exemplos de queries GraphQL
+└── mochawesome-report/     # Relatórios de teste
+```
+
 ## 📊 Status Codes
 
 - `200` - Sucesso
@@ -213,6 +300,21 @@ NODE_ENV=development
 - `404` - Não encontrado
 - `409` - Conflito (duplicação)
 - `500` - Erro interno do servidor
+
+## 🔗 Arquivos de Exemplo
+
+### REST (examples.http)
+Exemplos prontos para usar com REST Client:
+- Registrar usuários
+- Fazer login
+- Realizar transferências
+- Gerenciar favoritos
+
+### GraphQL (examples.graphql)
+Queries e mutations prontas para usar:
+- Autenticação
+- Consultas de dados
+- Operações complexas
 
 ## 👥 Contribuição
 
