@@ -1,0 +1,6 @@
+{
+  "toAccount": "{{toAccount}}",
+  "amount": 500,
+  "description": "Test transfer"
+}
+

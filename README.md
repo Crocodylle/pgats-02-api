@@ -250,6 +250,13 @@ All tests generate HTML reports via Mochawesome:
 - **`externalApiHelper.js`**: REST requests with Axios
 - **`graphqlApiHelper.js`**: GraphQL requests with Axios
 
+### 🆕 Enhanced Helpers with Fixtures
+- **`fixtureHelper.js`**: Advanced fixture loading and processing
+- **`enhancedDataHelper.js`**: Data creation using fixture templates
+- **`enhancedRequestHelper.js`**: HTTP requests with fixture integration
+- **`enhancedGraphQLHelper.js`**: GraphQL operations with fixtures
+- **`testSuite.js`**: Complete scenario orchestration
+
 ## 💾 Database
 
 The application uses **in-memory** database for simplicity:
@@ -259,12 +266,22 @@ The application uses **in-memory** database for simplicity:
 
 ## 🔧 Configuration
 
-### Environment Variables (optional)
-```env
-PORT=3000
-JWT_SECRET=your-secret-key
-NODE_ENV=development
-```
+### Environment Setup
+1. **Copy environment template:**
+   ```bash
+   cp env.template .env
+   ```
+
+2. **Edit `.env` file** with your preferred values
+
+3. **Key variables:**
+   ```env
+   PORT=3000
+   JWT_SECRET=your-secure-secret-key
+   NODE_ENV=development
+   ```
+
+📖 **Full configuration guide:** [ENVIRONMENT-SETUP.md](./ENVIRONMENT-SETUP.md)
 
 ### Folder Structure
 ```
@@ -284,7 +301,19 @@ pgats-02-api/
 │   │   ├── rest/           # REST external
 │   │   └── graphql/        # GraphQL external
 │   ├── helpers/            # Test utilities
-│   └── fixtures/           # Test data
+│   │   ├── authHelper.js   # JWT operations
+│   │   ├── dataHelper.js   # Data creation
+│   │   ├── fixtureHelper.js # 🆕 Fixture management
+│   │   ├── enhancedDataHelper.js # 🆕 Data + Fixtures
+│   │   ├── enhancedRequestHelper.js # 🆕 Requests + Fixtures
+│   │   ├── enhancedGraphQLHelper.js # 🆕 GraphQL + Fixtures
+│   │   └── testSuite.js    # 🆕 Complete scenarios
+│   └── fixtures/           # 🆕 Test data & templates
+│       ├── request/        # Input data templates
+│       ├── response/       # Expected output templates
+│       ├── graphql/        # GraphQL queries & mutations
+│       ├── scenarios/      # Complete test scenarios
+│       └── testSuites/     # Test suite configurations
 ├── examples.http           # REST request examples
 ├── examples.graphql        # GraphQL query examples
 └── mochawesome-report/     # Test reports
@@ -315,6 +344,55 @@ Ready-to-use queries and mutations:
 - Authentication
 - Data queries
 - Complex operations
+
+## 🆕 Advanced Testing with Fixtures
+
+### Fixture-Based Testing
+```javascript
+// Create users from fixture template
+const users = await EnhancedDataHelper.createUsersFromFixture(
+    'request/users/ValidUser.json',
+    2
+);
+
+// Test endpoint with fixtures
+const response = await EnhancedRequestHelper.requestWithFixture(
+    'POST',
+    '/transfers',
+    'request/transfers/ValidTransfer.json',
+    users[0].token,
+    { toAccount: users[1].user.account }
+);
+```
+
+### Complete Scenario Testing
+```javascript
+// Run complete test scenario
+const result = await TestSuite.runCompleteScenario('TransferBetweenUsers');
+
+// Run entire test suite
+const suiteResults = await TestSuite.runAPITestSuite(
+    'testSuites/ComprehensiveAPISuite.json'
+);
+```
+
+### GraphQL with Fixtures
+```javascript
+// Execute GraphQL query from fixture
+const response = await EnhancedGraphQLHelper.queryFromFixture(
+    'graphql/queries/GetUserProfile.json',
+    { userId: user.id },
+    token
+);
+
+// Test GraphQL with expected response
+const result = await EnhancedGraphQLHelper.testGraphQLWithFixtures(
+    'graphql/queries/GetUserProfile.json',
+    'graphql/responses/UserProfile.json',
+    { userId: user.id },
+    token
+);
+```
 
 ## 👥 Contributing
 

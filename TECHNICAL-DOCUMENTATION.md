@@ -170,6 +170,120 @@ generateTokenForNewUser()
 generateExpiredToken()
 ```
 
+### 🆕 Enhanced Helpers with Fixtures
+
+#### `fixtureHelper.js`
+Advanced fixture loading and processing:
+```javascript
+// Load fixture file
+FixtureHelper.load('request/users/ValidUser.json')
+
+// Load with template replacements
+FixtureHelper.loadWithReplacements('request/transfers/ValidTransfer.json', {
+    toAccount: '123456',
+    amount: 500
+})
+
+// Clean dynamic fields for comparison
+FixtureHelper.cleanDynamicFields(response, ['id', 'createdAt'])
+
+// Compare objects ignoring specific fields
+FixtureHelper.compareIgnoringFields(actual, expected, ['id', 'timestamps'])
+```
+
+#### `enhancedDataHelper.js`
+Data creation using fixture templates:
+```javascript
+// Create user from fixture
+const { user, token } = await EnhancedDataHelper.createUserFromFixture(
+    'request/users/ValidUser.json',
+    { name: 'Custom Name' }
+)
+
+// Create multiple users from template
+const users = await EnhancedDataHelper.createUsersFromFixture(
+    'request/users/ValidUser.json',
+    3,
+    [{ name: 'User 1' }, { name: 'User 2' }, { name: 'User 3' }]
+)
+
+// Create complete scenario from fixture
+const scenario = await EnhancedDataHelper.createScenarioFromFixture(
+    'scenarios/TransferBetweenUsers.json'
+)
+```
+
+#### `enhancedRequestHelper.js`
+HTTP requests with fixture integration:
+```javascript
+// Make request using fixture data
+const response = await EnhancedRequestHelper.requestWithFixture(
+    'POST',
+    '/transfers',
+    'request/transfers/ValidTransfer.json',
+    token,
+    { toAccount: '123456' }
+)
+
+// Test endpoint with request and response fixtures
+const result = await EnhancedRequestHelper.testEndpointWithFixtures(
+    'POST',
+    '/transfers',
+    'request/transfers/ValidTransfer.json',
+    'response/success/TransferCompleted.json',
+    token
+)
+
+// Run complete user journey
+const journeyResult = await EnhancedRequestHelper.testUserJourney(
+    'scenarios/UserRegistrationFlow.json'
+)
+```
+
+#### `enhancedGraphQLHelper.js`
+GraphQL operations with fixtures:
+```javascript
+// Execute GraphQL query from fixture
+const response = await EnhancedGraphQLHelper.queryFromFixture(
+    'graphql/queries/GetUserProfile.json',
+    { userId: user.id },
+    token
+)
+
+// Test GraphQL with expected response
+const result = await EnhancedGraphQLHelper.testGraphQLWithFixtures(
+    'graphql/queries/GetUserProfile.json',
+    'graphql/responses/UserProfile.json',
+    { userId: user.id },
+    token
+)
+
+// Run GraphQL user journey
+const journeyResult = await EnhancedGraphQLHelper.testGraphQLUserJourney(
+    'scenarios/GraphQLUserFlow.json'
+)
+```
+
+#### `testSuite.js`
+Complete scenario orchestration:
+```javascript
+// Run complete scenario
+const result = await TestSuite.runCompleteScenario('TransferBetweenUsers')
+
+// Run API test suite
+const suiteResults = await TestSuite.runAPITestSuite(
+    'testSuites/ComprehensiveAPISuite.json'
+)
+
+// Run performance tests
+const perfResults = await TestSuite.runPerformanceTests(
+    'performance/APIPerformanceTests.json'
+)
+
+// Generate comprehensive report
+const report = TestSuite.generateTestReport(allResults)
+```
+
 #### `dataHelper.js`
 Creates consistent test data:
 ```javascript
@@ -470,3 +584,5 @@ DEBUG=* npm test
 ---
 
 **This technical documentation is maintained alongside the codebase to ensure accuracy and relevance.** 📚
+
+

@@ -1,0 +1,12 @@
+{
+  "query": "mutation RegisterUser($input: RegisterInput!) { register(input: $input) { token user { id name email account balance } } }",
+  "variables": {
+    "input": {
+      "name": "{{name}}",
+      "email": "{{email}}",
+      "password": "{{password}}"
+    }
+  },
+  "userDataTemplate": "request/users/ValidUser.json"
+}
+
