@@ -8,7 +8,15 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest  
+    runs-on: ubuntu-latest
+    
+    # ✅ Environment variables from secrets
+    env:
+      NODE_ENV: test
+      JWT_SECRET: ${{ secrets.JWT_SECRET_TEST || 'pgats-ci-test-secret-key-2024' }}
+      PORT: 3000
+      GRAPHQL_PORT: 4000
+      LOG_LEVEL: error
 
     steps:
     - name: Checkout repository
@@ -18,23 +26,38 @@ jobs:
       uses: actions/setup-node@v4
       with:
          node-version: '20.x'
-    - run: npm install
+    
+    - name: Install dependencies
+      run: npm install
 
-    - name: Run tests controller Rest
+    # 🧪 Unit/Integration Tests (Fast - No Server Required)
+    - name: Run Controller Tests (REST)
       run: npm run test-controllerRest
-    - name: Run tests controller GraphQL
-      run: npm run test-controller 
-    - name: Run tests controller
-      run: npm run test-controller   
+      
+    - name: Run Controller Tests (GraphQL)
+      run: npm run test-controllerGraphql
 
-    - name: Run the API 
+    # 🌐 End-to-End Tests (Requires Running Server)
+    - name: Start API Server in Background
       run: npm start &
 
-    - name: Wait for API to start
-      run: sleep 5
+    - name: Wait for API to be ready
+      run: |
+        echo "⏳ Waiting for API to start..."
+        sleep 5
+        echo "✅ API should be ready"
 
-    - name: Run tests external Rest
+    - name: Run External Tests (REST)
       run: npm run test-externalRest
 
-    - name: Run tests external GraphQL
+    - name: Run External Tests (GraphQL)
       run: npm run test-externalGraphql
+    
+    # 📊 Upload Test Reports (Optional)
+    - name: Upload Test Reports
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-reports
+        path: mochawesome-report/
+        retention-days: 30

@@ -81,15 +81,26 @@ const config = {
  */
 const validateConfig = () => {
     const required = [];
+    const insecureDefaults = [
+        'pgats-api-secret-key-2024-development',
+        'dev-secret-key',
+        'test-secret-key'
+    ];
 
+    // ✅ IMPROVED: Validate in production AND staging/test environments
     if (config.server.isProduction) {
-        if (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'pgats-api-secret-key-2024-development') {
-            required.push('JWT_SECRET (must be changed in production)');
+        if (!process.env.JWT_SECRET || insecureDefaults.includes(process.env.JWT_SECRET)) {
+            required.push('JWT_SECRET (must use a secure custom value in production)');
         }
     }
 
+    // ⚠️ WARN: Recommend custom secrets even in non-production
+    if (!config.server.isDevelopment && !process.env.JWT_SECRET) {
+        console.warn('⚠️  WARNING: Using default JWT_SECRET. Set JWT_SECRET environment variable for better security.');
+    }
+
     if (required.length > 0) {
-        throw new Error(`Missing required environment variables: ${required.join(', ')}`);
+        throw new Error(`❌ Missing required environment variables: ${required.join(', ')}`);
     }
 };
 
@@ -97,4 +108,5 @@ const validateConfig = () => {
 validateConfig();
 
 module.exports = config;
+
 

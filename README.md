@@ -283,6 +283,32 @@ The application uses **in-memory** database for simplicity:
 
 📖 **Full configuration guide:** [ENVIRONMENT-SETUP.md](./ENVIRONMENT-SETUP.md)
 
+### 🔐 Security & CI/CD Setup
+
+#### For Local Development
+The application works with default values (no `.env` required) for quick learning.
+
+#### For GitHub Actions / CI/CD
+Set up secure secrets for better security:
+
+1. **Generate a secure JWT secret:**
+   ```bash
+   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+   ```
+
+2. **Add to GitHub Secrets:**
+   - Go to: Repository → Settings → Secrets → Actions
+   - Create: `JWT_SECRET_TEST` with your generated value
+
+3. **Benefits:**
+   - ✅ Secure secret management
+   - ✅ Environment-specific configuration
+   - ✅ Audit trail and access control
+   - ✅ Industry best practices
+
+🔐 **Complete security guide:** [GITHUB-SECRETS-SETUP.md](./GITHUB-SECRETS-SETUP.md)  
+⚡ **Quick reference:** [SECURITY-QUICK-REFERENCE.md](./SECURITY-QUICK-REFERENCE.md)
+
 ### Folder Structure
 ```
 pgats-02-api/

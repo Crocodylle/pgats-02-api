@@ -135,6 +135,26 @@ The configuration system automatically validates required environment variables:
 4. **Use environment-specific values** - Different secrets for dev/test/prod
 5. **Limit CORS origins** - Only allow necessary domains
 
+### 🔐 For CI/CD and Production
+
+This project supports both **quick local development** (with defaults) and **secure production deployment** (with secrets).
+
+**Local Development:**
+- Default values work out of the box
+- No setup required for learning
+- Perfect for educational purposes
+
+**CI/CD Pipelines:**
+- Use GitHub Secrets for sensitive values
+- Environment-specific configuration
+- Industry best practices
+
+📖 **Complete guide:** See [GITHUB-SECRETS-SETUP.md](./GITHUB-SECRETS-SETUP.md) for detailed instructions on:
+- Setting up GitHub Secrets
+- Generating secure keys
+- Environment-specific deployments
+- Security best practices
+
 ## Troubleshooting
 
 ### Common Issues
@@ -171,4 +191,5 @@ For configuration issues, check:
 2. `.env` file location (project root)
 3. Configuration validation messages
 4. Application startup logs
+
 
