@@ -1,7 +1,8 @@
 // test/helpers/authHelper.js
 const jwt = require('jsonwebtoken');
+const config = require('../../src/config/environment');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_SECRET = config.security.jwtSecret;
 
 /**
  * Cria um token JWT válido para testes

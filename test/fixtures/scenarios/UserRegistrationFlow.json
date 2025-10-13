@@ -1,0 +1,43 @@
+{
+  "name": "Complete User Registration Flow",
+  "description": "Test complete user registration and login flow",
+  "users": [
+    {
+      "template": "request/users/ValidUser.json",
+      "overrides": {
+        "name": "Test User 1"
+      }
+    }
+  ],
+  "steps": [
+    {
+      "name": "Register user",
+      "type": "rest",
+      "method": "POST",
+      "endpoint": "/users/register",
+      "requestFixture": "request/users/ValidUser.json",
+      "expectedStatus": 201,
+      "saveToContext": "registrationResponse"
+    },
+    {
+      "name": "Login user",
+      "type": "rest", 
+      "method": "POST",
+      "endpoint": "/auth/login",
+      "requestFixture": "request/auth/ValidLogin.json",
+      "expectedStatus": 200,
+      "saveToContext": "loginResponse"
+    }
+  ],
+  "validation": {
+    "checks": [
+      {
+        "name": "User has correct balance",
+        "type": "balance_check",
+        "expectedBalance": 1000
+      }
+    ]
+  }
+}
+
+

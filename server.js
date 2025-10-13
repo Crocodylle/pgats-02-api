@@ -1,4 +1,5 @@
 const { createGraphQLServer, createRestAppWithGraphQLInfo } = require('./appWithGraphQL');
+const config = require('./src/config/environment');
 
 // Iniciar ambos os servidores
 const startServers = async () => {
@@ -8,7 +9,7 @@ const startServers = async () => {
     
     // Iniciar servidor REST
     const restApp = createRestAppWithGraphQLInfo();
-    const PORT = process.env.PORT || 3000;
+    const PORT = config.server.port;
     
     const server = restApp.listen(PORT, () => {
       console.log('🚀 PGATS-02 API (REST + GraphQL) iniciada com sucesso!');

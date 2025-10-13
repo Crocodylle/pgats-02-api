@@ -1,0 +1,54 @@
+{
+  "name": "Transfer Between Users Scenario",
+  "description": "Test transfer functionality between two users",
+  "setup": {
+    "users": {
+      "fromFixture": true,
+      "fixture": "request/users/ValidUser.json",
+      "count": 2,
+      "overrides": [
+        {
+          "name": "Rich User",
+          "balance": 5000
+        },
+        {
+          "name": "Poor User",
+          "balance": 100
+        }
+      ]
+    }
+  },
+  "steps": [
+    {
+      "name": "Create transfer",
+      "type": "rest",
+      "method": "POST",
+      "endpoint": "/transfers",
+      "requestFixture": "request/transfers/ValidTransfer.json",
+      "userIndex": 0,
+      "overrides": {
+        "toAccount": "{{user1Account}}",
+        "amount": 500
+      },
+      "expectedStatus": 201
+    },
+    {
+      "name": "Check sender balance",
+      "type": "rest",
+      "method": "GET", 
+      "endpoint": "/users/balance",
+      "userIndex": 0,
+      "expectedStatus": 200
+    },
+    {
+      "name": "Check recipient balance",
+      "type": "rest",
+      "method": "GET",
+      "endpoint": "/users/balance", 
+      "userIndex": 1,
+      "expectedStatus": 200
+    }
+  ]
+}
+
+

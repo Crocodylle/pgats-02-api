@@ -1,142 +1,142 @@
 # PGATS-02 API
 
-API REST e GraphQL para aprendizado de testes e automação. Simula um sistema de transferências bancárias com autenticação JWT.
+REST and GraphQL API for learning testing and automation. Simulates a banking transfer system with JWT authentication.
 
-> 📖 **Para detalhes técnicos aprofundados:** [DOCUMENTACAO-TECNICA.md](./DOCUMENTACAO-TECNICA.md)  
-> 🎓 **Para entender o fluxo de requisições:** [FLUXO-REQUISICOES.md](./FLUXO-REQUISICOES.md)
+> 📖 **For detailed technical information:** [TECHNICAL-DOCUMENTATION.md](./TECHNICAL-DOCUMENTATION.md)  
+> 🎓 **To understand the request flow:** [REQUEST-FLOW.md](./REQUEST-FLOW.md)
 
-## 📋 Funcionalidades
+## 📋 Features
 
-### Autenticação
-- ✅ Login com email e senha
-- ✅ Geração de token JWT
-- ✅ Middleware de autenticação
+### Authentication
+- ✅ Login with email and password
+- ✅ JWT token generation
+- ✅ Authentication middleware
 
-### Usuários
-- ✅ Registro de novos usuários
-- ✅ Consulta de usuários
-- ✅ Perfil do usuário logado
-- ✅ Consulta de saldo
-- ✅ Prevenção de usuários duplicados
+### Users
+- ✅ New user registration
+- ✅ User queries
+- ✅ Logged user profile
+- ✅ Balance inquiry
+- ✅ Duplicate user prevention
 
-### Transferências
-- ✅ Transferência entre contas
-- ✅ Histórico de transferências
-- ✅ Validação de saldo
-- ✅ Regras específicas para valores altos
+### Transfers
+- ✅ Account-to-account transfers
+- ✅ Transfer history
+- ✅ Balance validation
+- ✅ Specific rules for high amounts
 
-### Favoritos
-- ✅ Adicionar contas favoritas
-- ✅ Listar favoritos
-- ✅ Remover favoritos
-- ✅ Transferências privilegiadas para favoritos
+### Favorites
+- ✅ Add favorite accounts
+- ✅ List favorites
+- ✅ Remove favorites
+- ✅ Privileged transfers to favorites
 
-## 🔐 Regras de Negócio
+## 🔐 Business Rules
 
-- **Autenticação**: Email e senha obrigatórios
-- **Saldo inicial**: R$ 1.000,00 para novos usuários
-- **Transferências**: Limitadas a R$ 5.000,00 para não favorecidos
-- **Favoritos**: Transferências ilimitadas para usuários favorecidos
+- **Authentication**: Email and password required
+- **Initial balance**: $1,000.00 for new users
+- **Transfers**: Limited to $5,000.00 for non-favorites
+- **Favorites**: Unlimited transfers to favorite users
 
-## 🛠️ Tecnologias
+## 🛠️ Technologies
 
 ### Core
-- **Node.js** (v14+) - Runtime JavaScript
-- **Express** (v4.18.2) - Framework web para API REST
-- **Apollo Server** (v5.0.0) - Servidor GraphQL
-- **GraphQL** (v16.11.0) - Linguagem de consulta
+- **Node.js** (v14+) - JavaScript runtime
+- **Express** (v4.18.2) - Web framework for REST API
+- **Apollo Server** (v5.0.0) - GraphQL server
+- **GraphQL** (v16.11.0) - Query language
 
-### Segurança & Autenticação
-- **bcryptjs** (v2.4.3) - Hash de senhas
-- **jsonwebtoken** (v9.0.2) - JWT para autenticação
-- **joi** (v17.11.0) - Validação de dados
+### Security & Authentication
+- **bcryptjs** (v2.4.3) - Password hashing
+- **jsonwebtoken** (v9.0.2) - JWT for authentication
+- **joi** (v17.11.0) - Data validation
 - **cors** (v2.8.5) - Cross-Origin Resource Sharing
 
-### Testes & Qualidade
-- **Mocha** (v11.7.1) - Framework de testes
-- **Chai** (v6.0.1) - Biblioteca de assertions
-- **Supertest** (v6.3.4) - Testes HTTP para Express
-- **Axios** (v1.11.0) - Cliente HTTP para testes externos
-- **Sinon** (v21.0.0) - Mocks, spies e stubs
-- **Mochawesome** (v7.1.3) - Relatórios HTML de testes
+### Testing & Quality
+- **Mocha** (v11.7.1) - Testing framework
+- **Chai** (v6.0.1) - Assertion library
+- **Supertest** (v6.3.4) - HTTP testing for Express
+- **Axios** (v1.11.0) - HTTP client for external tests
+- **Sinon** (v21.0.0) - Mocks, spies and stubs
+- **Mochawesome** (v7.1.3) - HTML test reports
 
-### Documentação & Desenvolvimento
-- **Swagger** (swagger-jsdoc + swagger-ui-express) - Documentação API
-- **Nodemon** (v3.0.2) - Hot reload em desenvolvimento
+### Documentation & Development
+- **Swagger** (swagger-jsdoc + swagger-ui-express) - API documentation
+- **Nodemon** (v3.0.2) - Hot reload in development
 
-## 🚀 Como Executar
+## 🚀 How to Run
 
-### Pré-requisitos
-- **Node.js** (versão 14+)
+### Prerequisites
+- **Node.js** (version 14+)
 - **npm** (v6+)
 
-### Instalação
+### Installation
 
-1. **Clone o repositório:**
+1. **Clone the repository:**
    ```bash
    cd pgats-02-api
    ```
 
-2. **Instale as dependências:**
+2. **Install dependencies:**
    ```bash
    npm install
    ```
 
-3. **Inicie o servidor:**
+3. **Start the server:**
    ```bash
-   npm start                  # Produção
-   npm run dev               # Desenvolvimento
+   npm start                  # Production
+   npm run dev               # Development
    ```
 
-4. **Acesse as aplicações:**
+4. **Access the applications:**
 
-   **API REST (porta 3000):**
+   **REST API (port 3000):**
    - API: http://localhost:3000
-   - Documentação Swagger: http://localhost:3000/api-docs
+   - Swagger Documentation: http://localhost:3000/api-docs
    - Health Check: http://localhost:3000/health
    
-   **API GraphQL (porta 4000):**
+   **GraphQL API (port 4000):**
    - GraphQL Endpoint: http://localhost:4000/
-   - GraphQL Playground: http://localhost:4000/ (acesse no navegador)
+   - GraphQL Playground: http://localhost:4000/ (access in browser)
 
-## 📚 Documentação das APIs
+## 📚 API Documentation
 
-### API REST
-Documentação completa via Swagger UI: **http://localhost:3000/api-docs**
+### REST API
+Complete documentation via Swagger UI: **http://localhost:3000/api-docs**
 
-### API GraphQL
-Interface interativa: **http://localhost:4000/**
+### GraphQL API
+Interactive interface: **http://localhost:4000/**
 
-#### Endpoints REST Principais
+#### Main REST Endpoints
 
-**Autenticação**
-- `POST /auth/login` - Realizar login
+**Authentication**
+- `POST /auth/login` - Perform login
 
-**Usuários**
-- `POST /users/register` - Registrar usuário
-- `GET /users` - Listar usuários (autenticado)
-- `GET /users/profile` - Perfil do usuário (autenticado)
-- `GET /users/balance` - Saldo do usuário (autenticado)
+**Users**
+- `POST /users/register` - Register user
+- `GET /users` - List users (authenticated)
+- `GET /users/profile` - User profile (authenticated)
+- `GET /users/balance` - User balance (authenticated)
 
-**Transferências**
-- `POST /transfers` - Realizar transferência (autenticado)
-- `GET /transfers` - Listar transferências (autenticado)
+**Transfers**
+- `POST /transfers` - Perform transfer (authenticated)
+- `GET /transfers` - List transfers (authenticated)
 
-**Favoritos**
-- `POST /transfers/favorites` - Adicionar favorito (autenticado)
-- `GET /transfers/favorites` - Listar favoritos (autenticado)
-- `DELETE /transfers/favorites/:id` - Remover favorito (autenticado)
+**Favorites**
+- `POST /transfers/favorites` - Add favorite (authenticated)
+- `GET /transfers/favorites` - List favorites (authenticated)
+- `DELETE /transfers/favorites/:id` - Remove favorite (authenticated)
 
-## 🧪 Exemplos de Uso
+## 🧪 Usage Examples
 
-### REST - Registrar Usuário
+### REST - Register User
 ```bash
 curl -X POST http://localhost:3000/users/register \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "João Silva",
-    "email": "joao@email.com",
-    "password": "senha123"
+    "name": "John Silva",
+    "email": "john@email.com",
+    "password": "password123"
   }'
 ```
 
@@ -145,19 +145,19 @@ curl -X POST http://localhost:3000/users/register \
 curl -X POST http://localhost:3000/auth/login \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "joao@email.com",
-    "password": "senha123"
+    "email": "john@email.com",
+    "password": "password123"
   }'
 ```
 
-### GraphQL - Registrar Usuário
+### GraphQL - Register User
 ```graphql
-# Acesse http://localhost:4000/ no navegador e execute:
+# Access http://localhost:4000/ in browser and execute:
 mutation {
   register(input: {
-    name: "João Silva"
-    email: "joao@email.com"
-    password: "senha123"
+    name: "John Silva"
+    email: "john@email.com"
+    password: "password123"
   }) {
     token
     user {
@@ -171,9 +171,9 @@ mutation {
 }
 ```
 
-### GraphQL - Consultar Perfil (requer autenticação)
+### GraphQL - Query Profile (requires authentication)
 ```graphql
-# Headers: {"Authorization": "Bearer SEU_TOKEN_JWT"}
+# Headers: {"Authorization": "Bearer YOUR_JWT_TOKEN"}
 query {
   me {
     id
@@ -185,149 +185,253 @@ query {
 }
 ```
 
-## 🔑 Autenticação
+## 🔑 Authentication
 
-A API utiliza JWT (JSON Web Token). Para endpoints protegidos:
+The API uses JWT (JSON Web Token). For protected endpoints:
 
-1. Faça login para obter o token
-2. Inclua o token no header: `Authorization: Bearer SEU_TOKEN_JWT`
+1. Login to get the token
+2. Include the token in header: `Authorization: Bearer YOUR_JWT_TOKEN`
 
-## 📝 Scripts Disponíveis
+## 📝 Available Scripts
 
-### 🚀 Scripts Principais
+### 🚀 Main Scripts
 ```bash
-npm start                     # Inicia servidores (REST:3000 + GraphQL:4000)
-npm run dev                   # Desenvolvimento com hot reload
+npm start                     # Start servers (REST:3000 + GraphQL:4000)
+npm run dev                   # Development with hot reload
 ```
 
-### 🧪 Scripts de Teste
+### 🧪 Test Scripts
 
-#### Todos os Testes
+#### All Tests
 ```bash
-npm test                      # Executa todos os testes (REST + GraphQL)
+npm test                      # Run all tests (REST + GraphQL)
 ```
 
-#### Testes por Categoria
+#### Tests by Category
 ```bash
-npm run test-controller       # Todos os testes de controllers
-npm run test-external         # Todos os testes externos (precisa servidor rodando)
+npm run test-controller       # All controller tests
+npm run test-external         # All external tests (requires server running)
 ```
 
-#### Testes Específicos por Tipo
+#### Specific Tests by Type
 ```bash
-# Controllers (Testes rápidos com Supertest)
-npm run test-controllerRest      # Apenas controllers REST
-npm run test-controllerGraphql   # Apenas controllers GraphQL
+# Controllers (Fast tests with Supertest)
+npm run test-controllerRest      # REST controllers only
+npm run test-controllerGraphql   # GraphQL controllers only
 
-# Externos (Testes end-to-end com Axios)
-npm run test-externalRest        # Apenas externos REST
-npm run test-externalGraphql     # Apenas externos GraphQL
+# External (End-to-end tests with Axios)
+npm run test-externalRest        # REST external only
+npm run test-externalGraphql     # GraphQL external only
 ```
 
-### 📊 Relatórios de Teste
-Todos os testes geram relatórios HTML via Mochawesome:
-- **Arquivo**: `mochawesome-report/mochawesome.html`
-- **Localização**: Pasta raiz do projeto
-- **Conteúdo**: Resultados detalhados, tempo de execução, estatísticas
+### 📊 Test Reports
+All tests generate HTML reports via Mochawesome:
+- **File**: `mochawesome-report/mochawesome.html`
+- **Location**: Project root folder
+- **Content**: Detailed results, execution time, statistics
 
-## 🧪 Estratégias de Teste
+## 🧪 Testing Strategies
 
-### Testes Unitários/Integração (Supertest)
-- **Controllers REST**: Importa `app.js` diretamente
-- **Velocidade**: Rápido (sem servidor HTTP)
-- **Uso**: Validação de lógica de negócio
+### Unit/Integration Tests (Supertest)
+- **REST Controllers**: Imports `app.js` directly
+- **Speed**: Fast (no HTTP server)
+- **Usage**: Business logic validation
 
-### Testes End-to-End (Axios)
-- **REST**: Requisições HTTP reais para `localhost:3000`
-- **GraphQL**: Requisições HTTP reais para `localhost:4000`
-- **Pré-requisito**: `npm start` deve estar rodando
-- **Uso**: Validação de comportamento real
+### End-to-End Tests (Axios)
+- **REST**: Real HTTP requests to `localhost:3000`
+- **GraphQL**: Real HTTP requests to `localhost:4000`
+- **Prerequisite**: `npm start` must be running
+- **Usage**: Real behavior validation
 
-### Helpers Especializados
-- **`authHelper.js`**: Tokens JWT para testes
-- **`dataHelper.js`**: Criação de dados de teste
-- **`requestHelper.js`**: Requisições REST com Supertest
-- **`externalApiHelper.js`**: Requisições REST com Axios
-- **`graphqlApiHelper.js`**: Requisições GraphQL com Axios
+### Specialized Helpers
+- **`authHelper.js`**: JWT tokens for tests
+- **`dataHelper.js`**: Test data creation
+- **`requestHelper.js`**: REST requests with Supertest
+- **`externalApiHelper.js`**: REST requests with Axios
+- **`graphqlApiHelper.js`**: GraphQL requests with Axios
 
-## 💾 Banco de Dados
+### 🆕 Enhanced Helpers with Fixtures
+- **`fixtureHelper.js`**: Advanced fixture loading and processing
+- **`enhancedDataHelper.js`**: Data creation using fixture templates
+- **`enhancedRequestHelper.js`**: HTTP requests with fixture integration
+- **`enhancedGraphQLHelper.js`**: GraphQL operations with fixtures
+- **`testSuite.js`**: Complete scenario orchestration
 
-A aplicação utiliza banco de dados **em memória** para simplicidade:
-- Usuários começam com saldo de R$ 1.000,00
-- Contas são geradas automaticamente (6 dígitos)
-- Dados são perdidos quando a aplicação é reiniciada
+## 💾 Database
 
-## 🔧 Configuração
+The application uses **in-memory** database for simplicity:
+- Users start with $1,000.00 balance
+- Accounts are automatically generated (6 digits)
+- Data is lost when application restarts
 
-### Variáveis de Ambiente (opcionais)
-```env
-PORT=3000
-JWT_SECRET=your-secret-key
-NODE_ENV=development
-```
+## 🔧 Configuration
 
-### Estrutura de Pastas
+### Environment Setup
+1. **Copy environment template:**
+   ```bash
+   cp env.template .env
+   ```
+
+2. **Edit `.env` file** with your preferred values
+
+3. **Key variables:**
+   ```env
+   PORT=3000
+   JWT_SECRET=your-secure-secret-key
+   NODE_ENV=development
+   ```
+
+📖 **Full configuration guide:** [ENVIRONMENT-SETUP.md](./ENVIRONMENT-SETUP.md)
+
+### 🔐 Security & CI/CD Setup
+
+#### For Local Development
+The application works with default values (no `.env` required) for quick learning.
+
+#### For GitHub Actions / CI/CD
+Set up secure secrets for better security:
+
+1. **Generate a secure JWT secret:**
+   ```bash
+   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+   ```
+
+2. **Add to GitHub Secrets:**
+   - Go to: Repository → Settings → Secrets → Actions
+   - Create: `JWT_SECRET_TEST` with your generated value
+
+3. **Benefits:**
+   - ✅ Secure secret management
+   - ✅ Environment-specific configuration
+   - ✅ Audit trail and access control
+   - ✅ Industry best practices
+
+🔐 **Complete security guide:** [GITHUB-SECRETS-SETUP.md](./GITHUB-SECRETS-SETUP.md)  
+⚡ **Quick reference:** [SECURITY-QUICK-REFERENCE.md](./SECURITY-QUICK-REFERENCE.md)
+
+### Folder Structure
 ```
 pgats-02-api/
-├── src/                     # Código fonte
-│   ├── controllers/         # Controllers REST
-│   ├── graphql/            # Configuração GraphQL
-│   ├── services/           # Lógica de negócio
-│   ├── models/             # Modelos de dados
-│   ├── routes/             # Rotas REST
+├── src/                     # Source code
+│   ├── controllers/         # REST controllers
+│   ├── graphql/            # GraphQL configuration
+│   ├── services/           # Business logic
+│   ├── models/             # Data models
+│   ├── routes/             # REST routes
 │   └── middlewares/        # Middlewares
-├── test/                   # Testes organizados
-│   ├── controller/         # Testes de controllers
-│   │   ├── rest/           # Controllers REST
-│   │   └── graphql/        # Controllers GraphQL
-│   ├── external/           # Testes end-to-end
-│   │   ├── rest/           # Externos REST
-│   │   └── graphql/        # Externos GraphQL
-│   ├── helpers/            # Utilitários de teste
-│   └── fixtures/           # Dados de teste
-├── examples.http           # Exemplos de requisições REST
-├── examples.graphql        # Exemplos de queries GraphQL
-└── mochawesome-report/     # Relatórios de teste
+├── test/                   # Organized tests
+│   ├── controller/         # Controller tests
+│   │   ├── rest/           # REST controllers
+│   │   └── graphql/        # GraphQL controllers
+│   ├── external/           # End-to-end tests
+│   │   ├── rest/           # REST external
+│   │   └── graphql/        # GraphQL external
+│   ├── helpers/            # Test utilities
+│   │   ├── authHelper.js   # JWT operations
+│   │   ├── dataHelper.js   # Data creation
+│   │   ├── fixtureHelper.js # 🆕 Fixture management
+│   │   ├── enhancedDataHelper.js # 🆕 Data + Fixtures
+│   │   ├── enhancedRequestHelper.js # 🆕 Requests + Fixtures
+│   │   ├── enhancedGraphQLHelper.js # 🆕 GraphQL + Fixtures
+│   │   └── testSuite.js    # 🆕 Complete scenarios
+│   └── fixtures/           # 🆕 Test data & templates
+│       ├── request/        # Input data templates
+│       ├── response/       # Expected output templates
+│       ├── graphql/        # GraphQL queries & mutations
+│       ├── scenarios/      # Complete test scenarios
+│       └── testSuites/     # Test suite configurations
+├── examples.http           # REST request examples
+├── examples.graphql        # GraphQL query examples
+└── mochawesome-report/     # Test reports
 ```
 
 ## 📊 Status Codes
 
-- `200` - Sucesso
-- `201` - Criado com sucesso
-- `400` - Dados inválidos
-- `401` - Não autorizado
-- `403` - Proibido
-- `404` - Não encontrado
-- `409` - Conflito (duplicação)
-- `500` - Erro interno do servidor
+- `200` - Success
+- `201` - Created successfully
+- `400` - Invalid data
+- `401` - Unauthorized
+- `403` - Forbidden
+- `404` - Not found
+- `409` - Conflict (duplication)
+- `500` - Internal server error
 
-## 🔗 Arquivos de Exemplo
+## 🔗 Example Files
 
 ### REST (examples.http)
-Exemplos prontos para usar com REST Client:
-- Registrar usuários
-- Fazer login
-- Realizar transferências
-- Gerenciar favoritos
+Ready-to-use examples with REST Client:
+- Register users
+- Login
+- Perform transfers
+- Manage favorites
 
 ### GraphQL (examples.graphql)
-Queries e mutations prontas para usar:
-- Autenticação
-- Consultas de dados
-- Operações complexas
+Ready-to-use queries and mutations:
+- Authentication
+- Data queries
+- Complex operations
 
-## 👥 Contribuição
+## 🆕 Advanced Testing with Fixtures
 
-Este projeto foi desenvolvido para fins educacionais. Sinta-se à vontade para:
-- Reportar bugs
-- Sugerir melhorias
-- Adicionar novos recursos
-- Melhorar a documentação
+### Fixture-Based Testing
+```javascript
+// Create users from fixture template
+const users = await EnhancedDataHelper.createUsersFromFixture(
+    'request/users/ValidUser.json',
+    2
+);
 
-## 📄 Licença
+// Test endpoint with fixtures
+const response = await EnhancedRequestHelper.requestWithFixture(
+    'POST',
+    '/transfers',
+    'request/transfers/ValidTransfer.json',
+    users[0].token,
+    { toAccount: users[1].user.account }
+);
+```
 
-MIT License - veja o arquivo LICENSE para detalhes.
+### Complete Scenario Testing
+```javascript
+// Run complete test scenario
+const result = await TestSuite.runCompleteScenario('TransferBetweenUsers');
+
+// Run entire test suite
+const suiteResults = await TestSuite.runAPITestSuite(
+    'testSuites/ComprehensiveAPISuite.json'
+);
+```
+
+### GraphQL with Fixtures
+```javascript
+// Execute GraphQL query from fixture
+const response = await EnhancedGraphQLHelper.queryFromFixture(
+    'graphql/queries/GetUserProfile.json',
+    { userId: user.id },
+    token
+);
+
+// Test GraphQL with expected response
+const result = await EnhancedGraphQLHelper.testGraphQLWithFixtures(
+    'graphql/queries/GetUserProfile.json',
+    'graphql/responses/UserProfile.json',
+    { userId: user.id },
+    token
+);
+```
+
+## 👥 Contributing
+
+This project was developed for educational purposes. Feel free to:
+- Report bugs
+- Suggest improvements
+- Add new features
+- Improve documentation
+
+## 📄 License
+
+MIT License - see the LICENSE file for details.
 
 ---
 
-**Desenvolvido para o curso PGATS-02 - Aprendizado de Testes e Automação de APIs com REST e GraphQL** 🚀
+**Developed for PGATS-02 course - Learning API Testing and Automation with REST and GraphQL** 🚀

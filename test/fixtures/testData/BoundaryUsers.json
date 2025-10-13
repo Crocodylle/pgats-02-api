@@ -1,0 +1,36 @@
+{
+  "minimum": {
+    "template": "request/users/ValidUser.json",
+    "balance": 1,
+    "overrides": {
+      "name": "Minimum Balance User"
+    }
+  },
+  "maximum": {
+    "template": "request/users/ValidUser.json", 
+    "balance": 100000,
+    "overrides": {
+      "name": "Maximum Balance User"
+    }
+  },
+  "edgeCases": [
+    {
+      "name": "Zero Balance User",
+      "template": "request/users/ValidUser.json",
+      "balance": 0,
+      "overrides": {
+        "name": "Zero Balance User"
+      }
+    },
+    {
+      "name": "Exact Limit User",
+      "template": "request/users/ValidUser.json",
+      "balance": 5000,
+      "overrides": {
+        "name": "Exact Limit User"
+      }
+    }
+  ]
+}
+
+

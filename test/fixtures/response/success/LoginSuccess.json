@@ -1,0 +1,15 @@
+{
+  "data": {
+    "token": "{{token}}",
+    "user": {
+      "id": "{{id}}",
+      "name": "John Doe",
+      "email": "john@email.com",
+      "account": "{{account}}",
+      "balance": 1000
+    }
+  },
+  "message": "Login successful"
+}
+
+

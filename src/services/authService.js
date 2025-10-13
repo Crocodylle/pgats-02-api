@@ -1,8 +1,9 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { findUserByEmail } = require('../database');
+const config = require('../config/environment');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_SECRET = config.security.jwtSecret;
 
 class AuthService {
   async login(email, password) {

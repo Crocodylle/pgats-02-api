@@ -1,0 +1,11 @@
+{
+  "data": {
+    "name": "John Doe",
+    "email": "john@email.com",
+    "account": "{{account}}",
+    "balance": 1000
+  },
+  "message": "User registered successfully"
+}
+
+

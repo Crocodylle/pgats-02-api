@@ -1,0 +1,15 @@
+{
+  "error": "Validation failed",
+  "details": [
+    {
+      "field": "email",
+      "message": "Email is required"
+    },
+    {
+      "field": "password",
+      "message": "Password must be at least 6 characters"
+    }
+  ]
+}
+
+
