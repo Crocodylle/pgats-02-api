@@ -16,7 +16,15 @@ class TransferService {
   async createTransfer(fromUserId, transferData) {
     const { toAccount, amount, description } = transferData;
 
-    // ✅ BUSINESS LOGIC VALIDATION ONLY (Format validation handled by Joi)
+    // ✅ VALIDATION: Amount must be positive (for GraphQL and REST)
+    if (amount <= 0) {
+      throw new Error('Valor deve ser maior que zero');
+    }
+
+    // ✅ VALIDATION: Amount must be a valid number
+    if (typeof amount !== 'number' || isNaN(amount)) {
+      throw new Error('Valor deve ser um número válido');
+    }
     
     // Business rule: Sender user exists?
     const fromUser = findUserById(fromUserId);
