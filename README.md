@@ -2,8 +2,10 @@
 
 REST and GraphQL API for learning testing and automation. Simulates a banking transfer system with JWT authentication.
 
-> 📖 **For detailed technical information:** [TECHNICAL-DOCUMENTATION.md](./TECHNICAL-DOCUMENTATION.md)  
-> 🎓 **To understand the request flow:** [REQUEST-FLOW.md](./REQUEST-FLOW.md)
+> 📚 **[Complete Documentation](./docs/)** - All project documentation organized in the docs folder  
+> 📖 **Technical Details:** [TECHNICAL-DOCUMENTATION.md](./docs/TECHNICAL-DOCUMENTATION.md)  
+> 🎓 **Request Flow:** [REQUEST-FLOW.md](./docs/REQUEST-FLOW.md)  
+> 🧪 **Testing Framework:** [FRAMEWORK-IMPROVEMENTS.md](./docs/FRAMEWORK-IMPROVEMENTS.md)
 
 ## 📋 Features
 
@@ -281,7 +283,7 @@ The application uses **in-memory** database for simplicity:
    NODE_ENV=development
    ```
 
-📖 **Full configuration guide:** [ENVIRONMENT-SETUP.md](./ENVIRONMENT-SETUP.md)
+📖 **Full configuration guide:** [ENVIRONMENT-SETUP.md](./docs/ENVIRONMENT-SETUP.md)
 
 ### 🔐 Security & CI/CD Setup
 
@@ -306,8 +308,8 @@ Set up secure secrets for better security:
    - ✅ Audit trail and access control
    - ✅ Industry best practices
 
-🔐 **Complete security guide:** [GITHUB-SECRETS-SETUP.md](./GITHUB-SECRETS-SETUP.md)  
-⚡ **Quick reference:** [SECURITY-QUICK-REFERENCE.md](./SECURITY-QUICK-REFERENCE.md)
+🔐 **Complete security guide:** [GITHUB-SECRETS-SETUP.md](./docs/GITHUB-SECRETS-SETUP.md)  
+⚡ **Quick reference:** [SECURITY-QUICK-REFERENCE.md](./docs/SECURITY-QUICK-REFERENCE.md)
 
 ### Folder Structure
 ```
