@@ -1,0 +1,672 @@
+{
+  "root_group": {
+    "name": "",
+    "path": "",
+    "id": "d41d8cd98f00b204e9800998ecf8427e",
+    "groups": [
+      {
+        "name": "setup",
+        "path": "::setup",
+        "id": "5c0f8025f7e0b6654089e5b00e950f1a",
+        "groups": [],
+        "checks": [
+            {
+              "passes": 1,
+              "fails": 0,
+              "name": "register status is 201",
+              "path": "::setup::register status is 201",
+              "id": "c7e5f19509a8be616131a28feb944163"
+            },
+            {
+              "name": "register response has user data",
+              "path": "::setup::register response has user data",
+              "id": "c46a7aac305e21a7b5c6ab3c244dba64",
+              "passes": 1,
+              "fails": 0
+            }
+          ]
+      },
+      {
+        "groups": [],
+        "checks": [
+            {
+              "fails": 0,
+              "name": "register: status is 201",
+              "path": "::Register User::register: status is 201",
+              "id": "059a10a94701c8eacd2279f1afe975f1",
+              "passes": 284
+            },
+            {
+              "fails": 0,
+              "name": "register: response has user data",
+              "path": "::Register User::register: response has user data",
+              "id": "b8e7f3fe0e0948b3a687f337b94d4338",
+              "passes": 284
+            },
+            {
+              "name": "register: user has account number",
+              "path": "::Register User::register: user has account number",
+              "id": "88570db33e88ab5a6c56957f1bca68a8",
+              "passes": 284,
+              "fails": 0
+            },
+            {
+              "passes": 284,
+              "fails": 0,
+              "name": "register: initial balance is 1000",
+              "path": "::Register User::register: initial balance is 1000",
+              "id": "b25c6b8017c90a626906a96dc687890b"
+            }
+          ],
+        "name": "Register User",
+        "path": "::Register User",
+        "id": "22e571b71ca7631824520a9aeebcf05c"
+      },
+      {
+        "name": "Login",
+        "path": "::Login",
+        "id": "3be6f351497d03a0d837b765965c8d50",
+        "groups": [],
+        "checks": [
+            {
+              "path": "::Login::login status is 200",
+              "id": "c401d7c1a93e71511162ed1b9db18192",
+              "passes": 284,
+              "fails": 0,
+              "name": "login status is 200"
+            },
+            {
+              "name": "login response has token",
+              "path": "::Login::login response has token",
+              "id": "45db7783737507a84bf9fbc5f93f6ab4",
+              "passes": 284,
+              "fails": 0
+            },
+            {
+              "passes": 284,
+              "fails": 0,
+              "name": "login: token received",
+              "path": "::Login::login: token received",
+              "id": "aa374cb3783be6b036b508eef1b82243"
+            },
+            {
+              "name": "login: token is string",
+              "path": "::Login::login: token is string",
+              "id": "571d0c608cec5a62a629450c4cff6060",
+              "passes": 284,
+              "fails": 0
+            },
+            {
+              "name": "login: token has content",
+              "path": "::Login::login: token has content",
+              "id": "c045b14d976a919d0dd426c6711e4794",
+              "passes": 284,
+              "fails": 0
+            }
+          ]
+      },
+      {
+        "checks": [
+          {
+            "name": "profile: status is 200",
+            "path": "::User Profile::profile: status is 200",
+            "id": "d879afd580ba8a2d4530e17d1dd8501d",
+            "passes": 284,
+            "fails": 0
+          },
+          {
+            "name": "profile: has user name",
+            "path": "::User Profile::profile: has user name",
+            "id": "78eae1932f7ba1987c90dce2280f34d0",
+            "passes": 284,
+            "fails": 0
+          },
+          {
+            "name": "profile: has correct email",
+            "path": "::User Profile::profile: has correct email",
+            "id": "10cb3f6b03c0d0f23de2612c753480c2",
+            "passes": 284,
+            "fails": 0
+          },
+          {
+            "fails": 0,
+            "name": "profile: has account number",
+            "path": "::User Profile::profile: has account number",
+            "id": "c3b7a4935d140866495685d495fae38b",
+            "passes": 284
+          }
+        ],
+        "name": "User Profile",
+        "path": "::User Profile",
+        "id": "5c8dbd402c769d48cf7951281377e385",
+        "groups": []
+      },
+      {
+        "name": "Check Balance",
+        "path": "::Check Balance",
+        "id": "2204b80338d1b9f7d19a28a194ed47cb",
+        "groups": [],
+        "checks": [
+            {
+              "name": "balance: status is 200",
+              "path": "::Check Balance::balance: status is 200",
+              "id": "36f371efde64f6da94c0fefe82d27b78",
+              "passes": 284,
+              "fails": 0
+            },
+            {
+              "name": "balance: has balance field",
+              "path": "::Check Balance::balance: has balance field",
+              "id": "61c8dbba7137cc6b2aeb780c46cee8b6",
+              "passes": 284,
+              "fails": 0
+            },
+            {
+              "name": "balance: is non-negative",
+              "path": "::Check Balance::balance: is non-negative",
+              "id": "3e2c7fa0873cd0c656e21ebd1ed7c061",
+              "passes": 284,
+              "fails": 0
+            }
+          ]
+      },
+      {
+        "path": "::Transfer Operations",
+        "id": "a813edc4709875819f1fdb9d34d68a87",
+        "groups": [],
+        "checks": [
+            {
+              "fails": 0,
+              "name": "transfer: status is 201 or 400",
+              "path": "::Transfer Operations::transfer: status is 201 or 400",
+              "id": "7bc3be661a4eaf8e3dfe76a7ca678a42",
+              "passes": 284
+            },
+            {
+              "name": "transfer: has response body",
+              "path": "::Transfer Operations::transfer: has response body",
+              "id": "575e02d2a1f80080127398c423cc587e",
+              "passes": 284,
+              "fails": 0
+            },
+            {
+              "fails": 0,
+              "name": "transfer: successful or expected error",
+              "path": "::Transfer Operations::transfer: successful or expected error",
+              "id": "dcbf56b552199a56f7d5e7ac4b2539ce",
+              "passes": 284
+            }
+          ],
+        "name": "Transfer Operations"
+      },
+      {
+        "checks": [
+          {
+            "name": "list transfers: status is 200",
+            "path": "::List Transfers::list transfers: status is 200",
+            "id": "aee2638107e8f40b550d3c5f3cfa059a",
+            "passes": 284,
+            "fails": 0
+          },
+          {
+            "fails": 0,
+            "name": "list transfers: returns array",
+            "path": "::List Transfers::list transfers: returns array",
+            "id": "85b6b5e6afb84fe0278b877ff883343c",
+            "passes": 284
+          }
+        ],
+        "name": "List Transfers",
+        "path": "::List Transfers",
+        "id": "27349bbb155391dfa44ee45f1dc3f9cf",
+        "groups": []
+      }
+    ],
+    "checks": []
+  },
+  "options": {
+    "noColor": false,
+    "summaryTrendStats": [
+      "avg",
+      "min",
+      "med",
+      "max",
+      "p(90)",
+      "p(95)",
+      "p(99)"
+    ],
+    "summaryTimeUnit": ""
+  },
+  "state": {
+    "isStdOutTTY": true,
+    "isStdErrTTY": true,
+    "testRunDurationMs": 152622.5555
+  },
+  "metrics": {
+    "profile_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "p(99)": 185.0400000000002,
+        "avg": 23.60211267605634,
+        "min": 1,
+        "med": 4,
+        "max": 221,
+        "p(90)": 76.70000000000002,
+        "p(95)": 104.84999999999997
+      },
+      "thresholds": {
+        "p(95)<400": {
+          "ok": true
+        }
+      }
+    },
+    "balance_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "med": 4,
+        "max": 360,
+        "p(90)": 77,
+        "p(95)": 131,
+        "p(99)": 237.710000000001,
+        "avg": 25.714788732394368,
+        "min": 0
+      }
+    },
+    "group_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "med": 29.452199999999998,
+        "max": 653.2579,
+        "p(90)": 173.65627000000003,
+        "p(95)": 230.99273499999995,
+        "p(99)": 394.619027,
+        "avg": 67.09031073943662,
+        "min": 0.7975
+      }
+    },
+    "http_req_duration{expected_response:true}": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "med": 40.10125,
+        "max": 653.2579,
+        "p(90)": 178.5936,
+        "p(95)": 235.462225,
+        "p(99)": 401.3588700000003,
+        "avg": 69.60074420921539,
+        "min": 0
+      }
+    },
+    "vus_max": {
+      "type": "gauge",
+      "contains": "default",
+      "values": {
+        "value": 20,
+        "min": 20,
+        "max": 20
+      }
+    },
+    "list_transfers_duration": {
+      "contains": "time",
+      "values": {
+        "p(99)": 190.38000000000022,
+        "avg": 31.12323943661972,
+        "min": 2,
+        "med": 4,
+        "max": 340,
+        "p(90)": 99.30000000000015,
+        "p(95)": 123
+      },
+      "type": "trend"
+    },
+    "http_req_receiving": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "p(99)": 6.571970000000001,
+        "avg": 0.6315279601406801,
+        "min": 0,
+        "med": 0,
+        "max": 15.2752,
+        "p(90)": 1.5636999999999999,
+        "p(95)": 2.1932
+      }
+    },
+    "group_duration{group:::User Profile}": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 23.722431690140844,
+        "min": 0.7975,
+        "med": 4.27935,
+        "max": 221.3997,
+        "p(90)": 77.02267000000002,
+        "p(95)": 105.56936499999998,
+        "p(99)": 184.95775900000018
+      },
+      "thresholds": {
+        "p(95)<400": {
+          "ok": true
+        }
+      }
+    },
+    "success_rate": {
+      "values": {
+        "rate": 1,
+        "passes": 1704,
+        "fails": 0
+      },
+      "type": "rate",
+      "contains": "default"
+    },
+    "http_req_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 66.86560662368106,
+        "min": 0,
+        "med": 29.211199999999998,
+        "max": 653.2579,
+        "p(90)": 173.9506,
+        "p(95)": 230.960025,
+        "p(99)": 394.60384500000004
+      },
+      "thresholds": {
+        "p(95)<500": {
+          "ok": true
+        },
+        "p(99)<1000": {
+          "ok": true
+        }
+      }
+    },
+    "iteration_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "p(99)": 6537.173636000001,
+        "avg": 5460.292593309859,
+        "min": 4088.9714,
+        "med": 5428.62095,
+        "max": 6626.1971,
+        "p(90)": 6054.728480000001,
+        "p(95)": 6237.4032
+      }
+    },
+    "http_reqs": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 1706,
+        "rate": 11.177902207252714
+      }
+    },
+    "http_req_failed": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 0.05861664712778429,
+        "passes": 100,
+        "fails": 1606
+      },
+      "thresholds": {
+        "rate<0.01": {
+          "ok": false
+        }
+      }
+    },
+    "register_duration": {
+      "thresholds": {
+        "p(95)<800": {
+          "ok": true
+        }
+      },
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "p(99)": 521.6800000000001,
+        "avg": 166.25704225352112,
+        "min": 78,
+        "med": 123,
+        "max": 653,
+        "p(90)": 305.1,
+        "p(95)": 388.84999999999997
+      }
+    },
+    "transfer_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "max": 213,
+        "p(90)": 75,
+        "p(95)": 94,
+        "p(99)": 161,
+        "avg": 21.658450704225352,
+        "min": 0,
+        "med": 5
+      },
+      "thresholds": {
+        "p(95)<700": {
+          "ok": true
+        }
+      }
+    },
+    "data_received": {
+      "values": {
+        "count": 888283,
+        "rate": 5820.129253437904
+      },
+      "type": "counter",
+      "contains": "data"
+    },
+    "login_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 133.35915492957747,
+        "min": 78,
+        "med": 104,
+        "max": 454,
+        "p(90)": 230.40000000000003,
+        "p(95)": 270.69999999999993,
+        "p(99)": 404.72000000000025
+      },
+      "thresholds": {
+        "p(95)<600": {
+          "ok": true
+        }
+      }
+    },
+    "http_req_sending": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 0.032696776084407964,
+        "min": 0,
+        "med": 0,
+        "max": 7.435,
+        "p(90)": 0,
+        "p(95)": 0,
+        "p(99)": 0.7110450000000017
+      }
+    },
+    "group_duration{group:::Register User}": {
+      "values": {
+        "p(90)": 305.83722000000006,
+        "p(95)": 388.98263499999996,
+        "p(99)": 522.453644,
+        "avg": 166.49650070422538,
+        "min": 77.8934,
+        "med": 123.2979,
+        "max": 653.2579
+      },
+      "thresholds": {
+        "p(95)<800": {
+          "ok": true
+        }
+      },
+      "type": "trend",
+      "contains": "time"
+    },
+    "group_duration{group:::Login}": {
+      "contains": "time",
+      "values": {
+        "avg": 133.43298450704228,
+        "min": 78.1852,
+        "med": 103.78905,
+        "max": 454.6209,
+        "p(90)": 230.35881,
+        "p(95)": 271.092455,
+        "p(99)": 404.8894540000002
+      },
+      "thresholds": {
+        "p(95)<600": {
+          "ok": true
+        }
+      },
+      "type": "trend"
+    },
+    "group_duration{group:::Transfer Operations}": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "p(90)": 75.04098,
+        "p(95)": 94.437905,
+        "p(99)": 160.50339400000001,
+        "avg": 21.78201091549295,
+        "min": 1.342,
+        "med": 4.7317,
+        "max": 212.8069
+      },
+      "thresholds": {
+        "p(95)<700": {
+          "ok": true
+        }
+      }
+    },
+    "successful_registrations": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 284,
+        "rate": 1.8607996640444144
+      }
+    },
+    "http_req_tls_handshaking": {
+      "contains": "time",
+      "values": {
+        "avg": 0,
+        "min": 0,
+        "med": 0,
+        "max": 0,
+        "p(90)": 0,
+        "p(95)": 0,
+        "p(99)": 0
+      },
+      "type": "trend"
+    },
+    "http_req_connecting": {
+      "contains": "time",
+      "values": {
+        "min": 0,
+        "med": 0,
+        "max": 1.6036,
+        "p(90)": 0,
+        "p(95)": 0,
+        "p(99)": 0.51844,
+        "avg": 0.011286400937866354
+      },
+      "type": "trend"
+    },
+    "vus": {
+      "type": "gauge",
+      "contains": "default",
+      "values": {
+        "value": 1,
+        "min": 1,
+        "max": 20
+      }
+    },
+    "successful_transfers": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 184,
+        "rate": 1.205588514733001
+      }
+    },
+    "checks": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 1,
+        "passes": 5966,
+        "fails": 0
+      },
+      "thresholds": {
+        "rate>0.95": {
+          "ok": true
+        }
+      }
+    },
+    "successful_logins": {
+      "values": {
+        "count": 284,
+        "rate": 1.8607996640444144
+      },
+      "type": "counter",
+      "contains": "default"
+    },
+    "http_req_blocked": {
+      "values": {
+        "p(90)": 0,
+        "p(95)": 0,
+        "p(99)": 0.9945350000000029,
+        "avg": 0.024009437280187573,
+        "min": 0,
+        "med": 0,
+        "max": 2.5043
+      },
+      "type": "trend",
+      "contains": "time"
+    },
+    "http_req_waiting": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "med": 28.9493,
+        "max": 652.7559,
+        "p(90)": 172.54625,
+        "p(95)": 230.04840000000002,
+        "p(99)": 394.60384500000004,
+        "avg": 66.20138188745602,
+        "min": 0
+      }
+    },
+    "iterations": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 284,
+        "rate": 1.8607996640444144
+      }
+    },
+    "data_sent": {
+      "contains": "data",
+      "values": {
+        "count": 618014,
+        "rate": 4049.2966323054393
+      },
+      "type": "counter"
+    }
+  },
+  "setup_data": {
+    "apiAvailable": true,
+    "receiverAccount": "968957",
+    "receiverEmail": "receptor.k6.1766086200857-mmn5dxk@teste.com",
+    "receiverPassword": "senha123"
+  }
+}
