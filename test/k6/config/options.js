@@ -40,6 +40,8 @@ export const thresholds = {
     'register_duration': ['p(95)<800'],
     'transfer_duration': ['p(95)<700'],
     'profile_duration': ['p(95)<400'],
+    'balance_duration': ['p(95)<400'],
+    'list_transfers_duration': ['p(95)<500'],
 };
 
 // ============================================================================

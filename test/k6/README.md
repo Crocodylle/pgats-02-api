@@ -263,6 +263,8 @@ export const thresholds = {
     'register_duration': ['p(95)<800'],
     'transfer_duration': ['p(95)<700'],
     'profile_duration': ['p(95)<400'],
+    'balance_duration': ['p(95)<400'],
+    'list_transfers_duration': ['p(95)<500'],
 };
 ```
 
@@ -426,7 +428,7 @@ O codigo abaixo esta armazenado no arquivo `helpers/generators.js` e demonstra o
  */
 export function generateName() {
     const firstNames = [
-        'Joao', 'Maria', 'Pedro', 'Ana', 'Carlos', 'Juliana',
+        'João', 'Maria', 'Pedro', 'Ana', 'Carlos', 'Juliana',
         'Lucas', 'Fernanda', 'Rafael', 'Patricia', 'Bruno', 'Camila'
     ];
     
@@ -677,21 +679,25 @@ O codigo abaixo demonstra o **Data-Driven Testing**. Os dados de teste sao carre
         "password": "senha123",
         "expectedBalance": 1000.00,
         "transferAmount": 100.00,
-        "description": "Usuario padrao com transferencia pequena"
+        "description": "Usuário padrão com transferência pequena"
     },
     {
         "scenario": "user_high_transfer",
         "name": "Ana Silva",
         "email": "ana.silva.k6test@email.com",
         "password": "senha456",
+        "expectedBalance": 1000.00,
         "transferAmount": 500.00,
-        "description": "Usuario com transferencia de valor medio"
+        "description": "Usuário com transferência de valor médio"
     },
     {
         "scenario": "user_limit_transfer",
         "name": "Roberto Santos",
+        "email": "roberto.santos.k6test@email.com",
+        "password": "senha789",
+        "expectedBalance": 1000.00,
         "transferAmount": 4999.00,
-        "description": "Usuario proximo ao limite de transferencia"
+        "description": "Usuário próximo ao limite de transferência"
     }
 ]
 ```
