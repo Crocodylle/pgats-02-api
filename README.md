@@ -61,6 +61,7 @@ REST and GraphQL API for learning testing and automation. Simulates a banking tr
 - **Axios** (v1.11.0) - HTTP client for external tests
 - **Sinon** (v21.0.0) - Mocks, spies and stubs
 - **Mochawesome** (v7.1.3) - HTML test reports
+- **K6** - Performance testing tool
 
 ### Documentation & Development
 - **Swagger** (swagger-jsdoc + swagger-ui-express) - API documentation
@@ -232,6 +233,15 @@ All tests generate HTML reports via Mochawesome:
 - **Location**: Project root folder
 - **Content**: Detailed results, execution time, statistics
 
+### 🚀 Performance Tests (K6)
+```bash
+npm run test-k6                  # Run K6 performance tests
+npm run test-k6:report           # Run with JSON output for reports
+npm run test-k6:generate-report  # Generate HTML report from results
+```
+
+> **Note:** Requires [K6 installed](https://k6.io/docs/get-started/installation/) and API running (`npm start`)
+
 ## 🧪 Testing Strategies
 
 ### Unit/Integration Tests (Supertest)
@@ -336,12 +346,18 @@ pgats-02-api/
 │   │   ├── enhancedRequestHelper.js # 🆕 Requests + Fixtures
 │   │   ├── enhancedGraphQLHelper.js # 🆕 GraphQL + Fixtures
 │   │   └── testSuite.js    # 🆕 Complete scenarios
-│   └── fixtures/           # 🆕 Test data & templates
-│       ├── request/        # Input data templates
-│       ├── response/       # Expected output templates
-│       ├── graphql/        # GraphQL queries & mutations
-│       ├── scenarios/      # Complete test scenarios
-│       └── testSuites/     # Test suite configurations
+│   ├── fixtures/           # 🆕 Test data & templates
+│   │   ├── request/        # Input data templates
+│   │   ├── response/       # Expected output templates
+│   │   ├── graphql/        # GraphQL queries & mutations
+│   │   ├── scenarios/      # Complete test scenarios
+│   │   └── testSuites/     # Test suite configurations
+│   └── k6/                 # 🚀 Performance tests
+│       ├── config/         # K6 options, thresholds, stages
+│       ├── data/           # Data-driven test scenarios
+│       ├── helpers/        # Auth, generators, HTTP helpers
+│       ├── tests/          # Main test files
+│       └── reports/        # Generated HTML reports
 ├── examples.http           # REST request examples
 ├── examples.graphql        # GraphQL query examples
 └── mochawesome-report/     # Test reports
@@ -421,6 +437,61 @@ const result = await EnhancedGraphQLHelper.testGraphQLWithFixtures(
     token
 );
 ```
+
+## 🚀 Performance Testing with K6
+
+The project includes comprehensive performance tests using K6, demonstrating all key concepts:
+
+### Concepts Implemented
+
+| Concept | File | Description |
+|---------|------|-------------|
+| **Thresholds** | `config/options.js` | Performance limits (p95<500ms, rate<1%) |
+| **Checks** | `banking-api.test.js` | Response validations |
+| **Helpers** | `helpers/*.js` | Reusable functions (login, http, generators) |
+| **Trends** | `banking-api.test.js` | Custom metrics per endpoint |
+| **Faker** | `helpers/generators.js` | Dynamic data generation |
+| **Environment Variables** | `config/options.js` | K6_BASE_URL, K6_VUS configuration |
+| **Stages** | `config/options.js` | Load phases (ramp-up, sustain, stress, ramp-down) |
+| **Response Reuse** | `banking-api.test.js` | Token and account reuse between requests |
+| **JWT Token** | `helpers/auth.js` | Bearer token authentication |
+| **Data-Driven** | `data/users.json` | SharedArray with test scenarios |
+| **Groups** | `banking-api.test.js` | Logical grouping of operations |
+
+### K6 Test Structure
+
+```
+test/k6/
+├── config/options.js        # Thresholds, Stages, Environment Variables
+├── data/users.json          # Data-Driven Testing scenarios
+├── helpers/
+│   ├── auth.js              # Authentication helpers
+│   ├── generators.js        # Faker data generation
+│   └── http.js              # HTTP request helpers
+├── tests/
+│   └── banking-api.test.js  # Main test file
+├── README.md                # Detailed K6 documentation
+└── report.html              # Generated HTML report
+```
+
+### Running K6 Tests
+
+```bash
+# Install K6 first: https://k6.io/docs/get-started/installation/
+
+# Start the API
+npm start
+
+# Run performance tests
+npm run test-k6
+
+# Run with custom configuration
+K6_BASE_URL=http://localhost:3000 K6_VUS=20 npm run test-k6
+```
+
+> 📖 **Full K6 documentation:** [test/k6/README.md](./test/k6/README.md)
+
+---
 
 ## 👥 Contributing
 
