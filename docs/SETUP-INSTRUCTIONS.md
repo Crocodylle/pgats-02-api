@@ -272,10 +272,10 @@ Use different secrets for each project:
 ## 🎓 Learning Resources
 
 ### Included Documentation
-- 📖 `GITHUB-SECRETS-SETUP.md` - Complete guide
-- ⚡ `SECURITY-QUICK-REFERENCE.md` - Quick commands
-- 🔧 `ENVIRONMENT-SETUP.md` - Environment config
-- 📝 `CHANGELOG-SECURITY.md` - What changed
+- 📖 [GITHUB-SECRETS-SETUP.md](./GITHUB-SECRETS-SETUP.md) - Complete guide
+- ⚡ [SECURITY-QUICK-REFERENCE.md](./SECURITY-QUICK-REFERENCE.md) - Quick commands
+- 🔧 [ENVIRONMENT-SETUP.md](./ENVIRONMENT-SETUP.md) - Environment config
+- 📝 [CHANGELOG-SECURITY.md](./CHANGELOG-SECURITY.md) - What changed
 
 ### External Resources
 - [GitHub Secrets Documentation](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
@@ -307,4 +307,5 @@ Use different secrets for each project:
 
 **Last Updated:** October 13, 2024  
 **Version:** 1.0.0
+
 

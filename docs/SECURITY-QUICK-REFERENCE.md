@@ -142,7 +142,7 @@ JWT_SECRET=my-test-secret-123 npm start
 
 - **Full Setup Guide:** [GITHUB-SECRETS-SETUP.md](./GITHUB-SECRETS-SETUP.md)
 - **Environment Config:** [ENVIRONMENT-SETUP.md](./ENVIRONMENT-SETUP.md)
-- **Main README:** [README.md](./README.md)
+- **Main README:** [README.md](../README.md)
 
 ## 💡 Pro Tips
 
@@ -203,4 +203,5 @@ NODE_ENV=test npm start
 **Need help?** See full documentation: [GITHUB-SECRETS-SETUP.md](./GITHUB-SECRETS-SETUP.md)
 
 **Last Updated:** October 2024
+
 

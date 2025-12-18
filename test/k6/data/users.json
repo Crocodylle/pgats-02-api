@@ -1,0 +1,93 @@
+[
+    {
+        "scenario": "user_normal",
+        "name": "Carlos Oliveira",
+        "email": "carlos.oliveira.k6test@email.com",
+        "password": "senha123",
+        "expectedBalance": 1000.00,
+        "transferAmount": 100.00,
+        "description": "Usuário padrão com transferência pequena"
+    },
+    {
+        "scenario": "user_high_transfer",
+        "name": "Ana Silva",
+        "email": "ana.silva.k6test@email.com",
+        "password": "senha456",
+        "expectedBalance": 1000.00,
+        "transferAmount": 500.00,
+        "description": "Usuário com transferência de valor médio"
+    },
+    {
+        "scenario": "user_limit_transfer",
+        "name": "Roberto Santos",
+        "email": "roberto.santos.k6test@email.com",
+        "password": "senha789",
+        "expectedBalance": 1000.00,
+        "transferAmount": 4999.00,
+        "description": "Usuário próximo ao limite de transferência"
+    },
+    {
+        "scenario": "user_minimum",
+        "name": "Julia Ferreira",
+        "email": "julia.ferreira.k6test@email.com",
+        "password": "senhaABC",
+        "expectedBalance": 1000.00,
+        "transferAmount": 0.01,
+        "description": "Usuário com transferência mínima"
+    },
+    {
+        "scenario": "user_multiple_transfers",
+        "name": "Pedro Costa",
+        "email": "pedro.costa.k6test@email.com",
+        "password": "senhaDEF",
+        "expectedBalance": 1000.00,
+        "transferAmount": 50.00,
+        "description": "Usuário para múltiplas transferências"
+    },
+    {
+        "scenario": "user_receiver",
+        "name": "Mariana Lima",
+        "email": "mariana.lima.k6test@email.com",
+        "password": "senhaGHI",
+        "expectedBalance": 1000.00,
+        "transferAmount": 0,
+        "description": "Usuário destinatário de transferências"
+    },
+    {
+        "scenario": "user_favorite_test",
+        "name": "Lucas Almeida",
+        "email": "lucas.almeida.k6test@email.com",
+        "password": "senhaJKL",
+        "expectedBalance": 1000.00,
+        "transferAmount": 6000.00,
+        "description": "Usuário para teste de favoritos (valor alto)"
+    },
+    {
+        "scenario": "user_concurrent",
+        "name": "Fernanda Rocha",
+        "email": "fernanda.rocha.k6test@email.com",
+        "password": "senhaMNO",
+        "expectedBalance": 1000.00,
+        "transferAmount": 200.00,
+        "description": "Usuário para testes de concorrência"
+    },
+    {
+        "scenario": "user_stress",
+        "name": "Bruno Mendes",
+        "email": "bruno.mendes.k6test@email.com",
+        "password": "senhaPQR",
+        "expectedBalance": 1000.00,
+        "transferAmount": 150.00,
+        "description": "Usuário para testes de stress"
+    },
+    {
+        "scenario": "user_boundary",
+        "name": "Patricia Nunes",
+        "email": "patricia.nunes.k6test@email.com",
+        "password": "senhaSTU",
+        "expectedBalance": 1000.00,
+        "transferAmount": 5000.00,
+        "description": "Usuário no limite exato (boundary test)"
+    }
+]
+

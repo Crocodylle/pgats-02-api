@@ -12,7 +12,10 @@
     "test-controllerGraphql": "mocha test/controller/graphql/*.test.js --recursive --reporter mochawesome",
     "test-external": "mocha test/external/**/*.test.js --recursive --reporter mochawesome",
     "test-externalRest": "mocha test/external/rest/*.test.js --recursive --reporter mochawesome",
-    "test-externalGraphql": "mocha test/external/graphql/*.test.js --recursive --reporter mochawesome"
+    "test-externalGraphql": "mocha test/external/graphql/*.test.js --recursive --reporter mochawesome",
+    "test-k6": "k6 run test/k6/tests/banking-api.test.js",
+    "test-k6:report": "k6 run test/k6/tests/banking-api.test.js --out json=test/k6/results.json",
+    "test-k6:generate-report": "node test/k6/generate-report.js"
   },
   "keywords": [
     "api",
