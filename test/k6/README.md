@@ -229,48 +229,567 @@ $env:K6_BASE_URL="http://localhost:3000"; $env:K6_VUS="20"; k6 run test/k6/tests
 
 ---
 
-## Conceitos Aplicados
+## Demonstracao dos 11 Conceitos Exigidos
 
-Este projeto demonstra todos os 11 conceitos exigidos:
-
-| # | Conceito | Arquivo | Implementacao |
-|---|----------|---------|---------------|
-| 1 | **Thresholds** | `config/options.js` | Limites p95<500ms, rate<1%, checks>95% |
-| 2 | **Checks** | `banking-api.test.js` | 20+ validacoes nos 6 groups |
-| 3 | **Helpers** | `helpers/*.js` | login(), getAuthHeaders(), generateUser() |
-| 4 | **Trends** | `banking-api.test.js` | 6 Trends + 4 Counters + 1 Rate |
-| 5 | **Faker** | `helpers/generators.js` | Nomes, emails, senhas, valores |
-| 6 | **Variaveis de Ambiente** | `config/options.js` | K6_BASE_URL, K6_VUS, K6_DURATION |
-| 7 | **Stages** | `config/options.js` | 4 fases: ramp-up, sustain, stress, ramp-down |
-| 8 | **Reaproveitamento** | `banking-api.test.js` | Token e Account entre requests |
-| 9 | **Token de Autenticacao** | `helpers/auth.js` | JWT Bearer em headers |
-| 10 | **Data-Driven Testing** | `data/users.json` | SharedArray com 10 cenarios |
-| 11 | **Groups** | `banking-api.test.js` | 6 groups logicos |
+Este projeto implementa TODOS os 11 conceitos exigidos no desafio. Abaixo, cada conceito e explicado com o arquivo onde foi implementado e trechos de codigo demonstrando sua aplicacao.
 
 ---
 
-## Thresholds Configurados
+### 1. THRESHOLDS
+
+**Arquivo:** `test/k6/config/options.js`
+
+O codigo abaixo esta armazenado no arquivo `config/options.js` e demonstra o uso de **Thresholds**. Thresholds sao limites de performance que definem se o teste passou ou falhou. Aqui definimos que 95% das requisicoes devem responder em menos de 500ms, menos de 1% podem falhar, e 95% dos checks devem passar.
 
 ```javascript
 export const thresholds = {
-    // HTTP geral
+    // Tempo de resposta HTTP geral - 95% das requisicoes < 500ms
     'http_req_duration': ['p(95)<500', 'p(99)<1000'],
+    
+    // Taxa de requisicoes com sucesso - Menos de 1% de falhas
     'http_req_failed': ['rate<0.01'],
     
-    // Por grupo
+    // Thresholds especificos por grupo
     'group_duration{group:::Login}': ['p(95)<600'],
     'group_duration{group:::Register User}': ['p(95)<800'],
     'group_duration{group:::User Profile}': ['p(95)<400'],
     'group_duration{group:::Transfer Operations}': ['p(95)<700'],
     
-    // Checks e metricas customizadas
+    // Checks devem ter 95% de sucesso
     'checks': ['rate>0.95'],
+    
+    // Metricas customizadas (Trends)
     'login_duration': ['p(95)<600'],
     'register_duration': ['p(95)<800'],
     'transfer_duration': ['p(95)<700'],
     'profile_duration': ['p(95)<400'],
 };
 ```
+
+---
+
+### 2. CHECKS
+
+**Arquivo:** `test/k6/tests/banking-api.test.js`
+
+O codigo abaixo esta armazenado no arquivo `banking-api.test.js` e demonstra o uso de **Checks**. Checks sao validacoes que verificam se a resposta da API esta correta. Aqui validamos o status HTTP, a presenca de dados do usuario, o numero da conta com 6 digitos e o saldo inicial de 1000.
+
+```javascript
+group('Register User', function() {
+    const response = http.post(`${BASE_URL}/users/register`, payload, params);
+    
+    // CHECKS: Validacoes da resposta
+    const checkResult = check(response, {
+        'register: status is 201': (r) => r.status === 201,
+        'register: response has user data': (r) => {
+            try {
+                const body = r.json();
+                return body && body.data && body.data.account;
+            } catch (e) {
+                return false;
+            }
+        },
+        'register: user has account number': (r) => {
+            try {
+                const body = r.json();
+                return body.data.account && body.data.account.length === 6;
+            } catch (e) {
+                return false;
+            }
+        },
+        'register: initial balance is 1000': (r) => {
+            try {
+                const body = r.json();
+                return body.data.balance === 1000;
+            } catch (e) {
+                return false;
+            }
+        }
+    });
+});
+```
+
+---
+
+### 3. HELPERS
+
+**Arquivo:** `test/k6/helpers/auth.js`
+
+O codigo abaixo esta armazenado no arquivo `helpers/auth.js` e demonstra o uso de **Helpers**. Helpers sao funcoes reutilizaveis que encapsulam logica comum. A funcao `login()` e importada e usada em varios lugares do teste, evitando duplicacao de codigo.
+
+```javascript
+/**
+ * HELPER: Realiza login e retorna o token JWT
+ */
+export function login(email, password) {
+    const payload = JSON.stringify({
+        email: email,
+        password: password
+    });
+
+    const params = {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        tags: { name: 'login' },
+    };
+
+    const response = http.post(`${BASE_URL}/auth/login`, payload, params);
+
+    const success = check(response, {
+        'login status is 200': (r) => r.status === 200,
+        'login response has token': (r) => {
+            const body = r.json();
+            return body && body.data && body.data.token;
+        },
+    });
+
+    if (success) {
+        const body = response.json();
+        return body.data.token;
+    }
+
+    return null;
+}
+```
+
+**Uso no teste principal (`banking-api.test.js`):**
+
+```javascript
+import { login, registerUser, getAuthHeaders } from '../helpers/auth.js';
+
+group('Login', function() {
+    // HELPER: Usa funcao de login do auth.js
+    userToken = login(uniqueUser.email, uniqueUser.password);
+});
+```
+
+---
+
+### 4. TRENDS
+
+**Arquivo:** `test/k6/tests/banking-api.test.js`
+
+O codigo abaixo esta armazenado no arquivo `banking-api.test.js` e demonstra o uso de **Trends**. Trends sao metricas customizadas que permitem medir duracoes especificas de cada operacao. Alem de Trends, tambem usamos Counters para contar operacoes e Rate para taxa de sucesso.
+
+```javascript
+import { Trend, Counter, Rate } from 'k6/metrics';
+
+// TRENDS: Metricas customizadas de duracao por operacao
+const loginDuration = new Trend('login_duration', true);
+const registerDuration = new Trend('register_duration', true);
+const transferDuration = new Trend('transfer_duration', true);
+const profileDuration = new Trend('profile_duration', true);
+const balanceDuration = new Trend('balance_duration', true);
+const listTransfersDuration = new Trend('list_transfers_duration', true);
+
+// COUNTERS: Contadores de operacoes
+const successfulLogins = new Counter('successful_logins');
+const successfulRegistrations = new Counter('successful_registrations');
+const successfulTransfers = new Counter('successful_transfers');
+const failedOperations = new Counter('failed_operations');
+
+// RATE: Taxa de sucesso
+const successRate = new Rate('success_rate');
+```
+
+**Uso das Trends para medir duracao:**
+
+```javascript
+group('Login', function() {
+    const startTime = Date.now();
+    
+    userToken = login(uniqueUser.email, uniqueUser.password);
+    
+    // TREND: Registra duracao do login
+    loginDuration.add(Date.now() - startTime);
+    
+    if (loginSuccess) {
+        successfulLogins.add(1);  // COUNTER
+    }
+    successRate.add(loginSuccess);  // RATE
+});
+```
+
+---
+
+### 5. FAKER
+
+**Arquivo:** `test/k6/helpers/generators.js`
+
+O codigo abaixo esta armazenado no arquivo `helpers/generators.js` e demonstra o uso de **Faker**. Como K6 nao possui biblioteca faker nativa, implementamos funcoes que geram dados aleatorios simulando o comportamento do Faker.js.
+
+```javascript
+/**
+ * FAKER: Gera um nome aleatorio realista
+ * Simula @faker-js/faker: faker.person.fullName()
+ */
+export function generateName() {
+    const firstNames = [
+        'Joao', 'Maria', 'Pedro', 'Ana', 'Carlos', 'Juliana',
+        'Lucas', 'Fernanda', 'Rafael', 'Patricia', 'Bruno', 'Camila'
+    ];
+    
+    const lastNames = [
+        'Silva', 'Santos', 'Oliveira', 'Souza', 'Rodrigues', 'Ferreira',
+        'Almeida', 'Pereira', 'Lima', 'Gomes', 'Costa', 'Ribeiro'
+    ];
+
+    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+    
+    return `${firstName} ${lastName}`;
+}
+
+/**
+ * FAKER: Gera um email unico aleatorio
+ * Simula @faker-js/faker: faker.internet.email()
+ */
+export function generateEmail(name = null) {
+    const domains = ['email.com', 'teste.com', 'gmail.com', 'outlook.com'];
+    const domain = domains[Math.floor(Math.random() * domains.length)];
+    const uniqueId = generateUniqueId();
+    
+    return `user.${uniqueId}@${domain}`;
+}
+
+/**
+ * FAKER: Gera um objeto completo de usuario
+ */
+export function generateUser() {
+    const name = generateName();
+    return {
+        name: name,
+        email: generateEmail(name),
+        password: generatePassword()
+    };
+}
+```
+
+**Uso no teste principal:**
+
+```javascript
+import { generateUser, generateAmount } from '../helpers/generators.js';
+
+export default function(data) {
+    // FAKER: Gera dados unicos para cada iteracao
+    const uniqueUser = generateUser();
+    uniqueUser.email = `${uniqueUser.email.split('@')[0]}.vu${vuId}.iter${iteration}@teste.com`;
+}
+```
+
+---
+
+### 6. VARIAVEIS DE AMBIENTE
+
+**Arquivo:** `test/k6/config/options.js`
+
+O codigo abaixo esta armazenado no arquivo `config/options.js` e demonstra o uso de **Variaveis de Ambiente**. Isso permite configurar o teste externamente sem alterar o codigo, facilitando execucao em diferentes ambientes.
+
+```javascript
+// VARIAVEIS DE AMBIENTE
+// Uso: K6_BASE_URL=http://api.prod.com k6 run test.js
+export const BASE_URL = __ENV.K6_BASE_URL || 'http://localhost:3000';
+export const VUS = parseInt(__ENV.K6_VUS) || 10;
+export const DURATION = __ENV.K6_DURATION || '2m';
+
+export const options = {
+    stages: stages,
+    thresholds: thresholds,
+    tags: {
+        testType: 'performance',
+        environment: __ENV.K6_ENV || 'local',  // Ambiente configuravel
+    },
+};
+```
+
+**Exemplo de execucao com variaveis:**
+
+```bash
+# Linux/Mac
+K6_BASE_URL=http://api.staging.com K6_VUS=50 k6 run test/k6/tests/banking-api.test.js
+
+# Windows PowerShell
+$env:K6_BASE_URL="http://localhost:3000"; $env:K6_VUS="20"; k6 run test/k6/tests/banking-api.test.js
+```
+
+---
+
+### 7. STAGES
+
+**Arquivo:** `test/k6/config/options.js`
+
+O codigo abaixo esta armazenado no arquivo `config/options.js` e demonstra o uso de **Stages**. Stages definem fases de carga progressiva para simular cenarios realistas com ramp-up, carga sustentada e ramp-down.
+
+```javascript
+// STAGES: Fases de carga progressiva
+export const stages = [
+    // Fase 1: Ramp-up - Aumento gradual de usuarios (0 -> 10 em 30s)
+    { duration: '30s', target: VUS },
+    
+    // Fase 2: Carga Sustentada - Mantem usuarios no pico (10 por 1 minuto)
+    { duration: '1m', target: VUS },
+    
+    // Fase 3: Pico de Stress - Testa limite do sistema (dobra para 20)
+    { duration: '30s', target: VUS * 2 },
+    
+    // Fase 4: Ramp-down - Reducao gradual (20 -> 0)
+    { duration: '30s', target: 0 },
+];
+
+export const options = {
+    stages: stages,  // Aplica os stages definidos
+    thresholds: thresholds,
+};
+```
+
+**Visualizacao das fases:**
+
+```
+VUs
+ ^
+20 |          ________
+   |         /        \
+10 |--------/          \--------
+   |       /            \
+ 0 +--------------------------------> tempo
+   0     30s    1m30s    2m    2m30s
+```
+
+---
+
+### 8. REAPROVEITAMENTO DE RESPOSTA
+
+**Arquivo:** `test/k6/tests/banking-api.test.js`
+
+O codigo abaixo esta armazenado no arquivo `banking-api.test.js` e demonstra o **Reaproveitamento de Resposta**. O token JWT e a conta (account) obtidos em uma requisicao sao salvos em variaveis e reutilizados nas requisicoes seguintes.
+
+```javascript
+export default function(data) {
+    // Variaveis para REAPROVEITAMENTO DE RESPOSTA
+    let userToken = null;
+    let userAccount = null;
+
+    group('Register User', function() {
+        const response = http.post(`${BASE_URL}/users/register`, payload, params);
+        
+        if (checkResult) {
+            const body = response.json();
+            // REAPROVEITAMENTO: Guarda account para uso posterior
+            userAccount = body.data.account;
+        }
+    });
+
+    group('Login', function() {
+        // REAPROVEITAMENTO: Token sera usado nas proximas requisicoes
+        userToken = login(uniqueUser.email, uniqueUser.password);
+    });
+
+    group('User Profile', function() {
+        // REAPROVEITAMENTO: Usa o token obtido no login
+        const params = {
+            headers: getAuthHeaders(userToken),
+        };
+        const response = http.get(`${BASE_URL}/users/profile`, params);
+    });
+
+    group('Transfer Operations', function() {
+        // REAPROVEITAMENTO: Usa account do setup como destino
+        const transferData = {
+            toAccount: data.receiverAccount,  // Account do usuario receptor criado no setup
+            amount: testUserData.transferAmount,
+        };
+        const response = authenticatedPost('/transfers', transferData, userToken);
+    });
+}
+```
+
+---
+
+### 9. USO DE TOKEN DE AUTENTICACAO
+
+**Arquivo:** `test/k6/helpers/auth.js`
+
+O codigo abaixo esta armazenado no arquivo `helpers/auth.js` e demonstra o **Uso de Token de Autenticacao**. O token JWT e extraido do login e usado no header Authorization como Bearer token para endpoints protegidos.
+
+```javascript
+/**
+ * HELPER: Cria headers de autenticacao com Bearer token
+ */
+export function getAuthHeaders(token) {
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,  // Token JWT no header
+    };
+}
+```
+
+**Uso no teste principal (`banking-api.test.js`):**
+
+```javascript
+group('User Profile', function() {
+    // USO DE TOKEN: Headers com Authorization Bearer
+    const params = {
+        headers: getAuthHeaders(userToken),  // Token obtido no login
+        tags: { name: 'profile' }
+    };
+    
+    const response = http.get(`${BASE_URL}/users/profile`, params);
+});
+```
+
+**Helper HTTP autenticado (`helpers/http.js`):**
+
+```javascript
+export function authenticatedGet(endpoint, token, tags = {}) {
+    const params = {
+        headers: getAuthHeaders(token),  // Usa token para autenticacao
+        tags: tags,
+    };
+    return http.get(`${BASE_URL}${endpoint}`, params);
+}
+
+export function authenticatedPost(endpoint, data, token, tags = {}) {
+    const params = {
+        headers: getAuthHeaders(token),  // Usa token para autenticacao
+        tags: tags,
+    };
+    return http.post(`${BASE_URL}${endpoint}`, JSON.stringify(data), params);
+}
+```
+
+---
+
+### 10. DATA-DRIVEN TESTING
+
+**Arquivo:** `test/k6/data/users.json` e `test/k6/tests/banking-api.test.js`
+
+O codigo abaixo demonstra o **Data-Driven Testing**. Os dados de teste sao carregados de um arquivo JSON externo (`users.json`) usando SharedArray, que e eficiente pois compartilha dados entre VUs sem duplicar memoria.
+
+**Arquivo de dados (`data/users.json`):**
+
+```json
+[
+    {
+        "scenario": "user_normal",
+        "name": "Carlos Oliveira",
+        "email": "carlos.oliveira.k6test@email.com",
+        "password": "senha123",
+        "expectedBalance": 1000.00,
+        "transferAmount": 100.00,
+        "description": "Usuario padrao com transferencia pequena"
+    },
+    {
+        "scenario": "user_high_transfer",
+        "name": "Ana Silva",
+        "email": "ana.silva.k6test@email.com",
+        "password": "senha456",
+        "transferAmount": 500.00,
+        "description": "Usuario com transferencia de valor medio"
+    },
+    {
+        "scenario": "user_limit_transfer",
+        "name": "Roberto Santos",
+        "transferAmount": 4999.00,
+        "description": "Usuario proximo ao limite de transferencia"
+    }
+]
+```
+
+**Uso no teste (`banking-api.test.js`):**
+
+```javascript
+import { SharedArray } from 'k6/data';
+
+// DATA-DRIVEN: Carrega dados do arquivo JSON
+const testUsers = new SharedArray('users', function() {
+    return JSON.parse(open('../data/users.json'));
+});
+
+export default function(data) {
+    // DATA-DRIVEN: Seleciona usuario baseado no VU
+    const vuId = __VU;
+    const testUserData = testUsers[vuId % testUsers.length];
+    
+    group('Transfer Operations', function() {
+        // DATA-DRIVEN: Usa valor do usuario de teste carregado do JSON
+        const transferData = {
+            toAccount: data.receiverAccount,
+            amount: testUserData.transferAmount,  // Valor do JSON
+            description: `Transfer - ${testUserData.scenario}`  // Cenario do JSON
+        };
+    });
+}
+```
+
+---
+
+### 11. GROUPS
+
+**Arquivo:** `test/k6/tests/banking-api.test.js`
+
+O codigo abaixo esta armazenado no arquivo `banking-api.test.js` e demonstra o uso de **Groups**. Groups agrupam operacoes relacionadas logicamente, permitindo metricas separadas por grupo e melhor organizacao do teste.
+
+```javascript
+import { group } from 'k6';
+import { login } from '../helpers/auth.js';
+
+export default function(data) {
+    // GROUP 1: Registro de usuario
+    group('Register User', function() {
+        const response = http.post(`${BASE_URL}/users/register`, payload, params);
+        check(response, { 'register: status is 201': (r) => r.status === 201 });
+    });
+
+    // GROUP 2: Login - Demonstra uso de Helper dentro do Group
+    group('Login', function() {
+        userToken = login(uniqueUser.email, uniqueUser.password);  // HELPER
+        check(null, { 'login: token received': () => userToken !== null });
+    });
+
+    // GROUP 3: Consulta de perfil
+    group('User Profile', function() {
+        const response = authenticatedGet('/users/profile', userToken);
+        check(response, { 'profile: status is 200': (r) => r.status === 200 });
+    });
+
+    // GROUP 4: Consulta de saldo
+    group('Check Balance', function() {
+        const response = authenticatedGet('/users/balance', userToken);
+        check(response, { 'balance: status is 200': (r) => r.status === 200 });
+    });
+
+    // GROUP 5: Transferencia bancaria
+    group('Transfer Operations', function() {
+        const response = authenticatedPost('/transfers', transferData, userToken);
+        check(response, { 'transfer: status is 201 or 400': (r) => r.status === 201 || r.status === 400 });
+    });
+
+    // GROUP 6: Listagem de transferencias
+    group('List Transfers', function() {
+        const response = authenticatedGet('/transfers', userToken);
+        check(response, { 'list transfers: status is 200': (r) => r.status === 200 });
+    });
+}
+```
+
+---
+
+## Resumo dos Conceitos
+
+| # | Conceito | Arquivo | Linha de Exemplo |
+|---|----------|---------|------------------|
+| 1 | **Thresholds** | `config/options.js` | `'http_req_duration': ['p(95)<500']` |
+| 2 | **Checks** | `banking-api.test.js` | `check(response, { 'status is 201': ... })` |
+| 3 | **Helpers** | `helpers/auth.js` | `export function login(email, password)` |
+| 4 | **Trends** | `banking-api.test.js` | `const loginDuration = new Trend('login_duration')` |
+| 5 | **Faker** | `helpers/generators.js` | `export function generateUser()` |
+| 6 | **Variaveis de Ambiente** | `config/options.js` | `export const BASE_URL = __ENV.K6_BASE_URL` |
+| 7 | **Stages** | `config/options.js` | `{ duration: '30s', target: VUS }` |
+| 8 | **Reaproveitamento** | `banking-api.test.js` | `userAccount = body.data.account` |
+| 9 | **Token de Autenticacao** | `helpers/auth.js` | `'Authorization': Bearer ${token}` |
+| 10 | **Data-Driven Testing** | `data/users.json` | `const testUsers = new SharedArray(...)` |
+| 11 | **Groups** | `banking-api.test.js` | `group('Login', function() { ... })` |
 
 ---
 
@@ -298,78 +817,6 @@ O relatorio HTML inclui:
 - Metricas customizadas (Trends)
 - Taxa de checks passando
 - Detalhes de erros
-
----
-
-## Exemplos de Codigo
-
-### 1. Thresholds (config/options.js)
-
-```javascript
-export const thresholds = {
-    'http_req_duration': ['p(95)<500', 'p(99)<1000'],
-    'http_req_failed': ['rate<0.01'],
-    'checks': ['rate>0.95'],
-};
-```
-
-### 2. Checks (banking-api.test.js)
-
-```javascript
-const checkResult = check(response, {
-    'register: status is 201': (r) => r.status === 201,
-    'register: user has account': (r) => {
-        const body = r.json();
-        return body && body.data && body.data.account;
-    },
-    'register: initial balance is 1000': (r) => {
-        return r.json().data.balance === 1000;
-    }
-});
-```
-
-### 3. Helper de Login (helpers/auth.js)
-
-```javascript
-export function login(email, password) {
-    const response = http.post(`${BASE_URL}/auth/login`, 
-        JSON.stringify({ email, password }),
-        { headers: { 'Content-Type': 'application/json' } }
-    );
-    
-    if (response.status === 200) {
-        return response.json().data.token;
-    }
-    return null;
-}
-```
-
-### 4. Groups (banking-api.test.js)
-
-```javascript
-group('Login', function() {
-    userToken = login(uniqueUser.email, uniqueUser.password);
-    
-    check(null, {
-        'login: token received': () => userToken !== null,
-    });
-});
-```
-
-### 5. Data-Driven Testing
-
-```javascript
-import { SharedArray } from 'k6/data';
-
-const testUsers = new SharedArray('users', function() {
-    return JSON.parse(open('../data/users.json'));
-});
-
-export default function(data) {
-    const testUserData = testUsers[__VU % testUsers.length];
-    // Usa testUserData.transferAmount, testUserData.scenario, etc.
-}
-```
 
 ---
 
