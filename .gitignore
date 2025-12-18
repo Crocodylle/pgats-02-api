@@ -111,3 +111,9 @@ pids
 # Mochawesome
 mochawesome-report/
 mochawesome.json
+
+# K6 Performance Test Reports
+test/k6/report.html
+test/k6/reports/*.html
+test/k6/summary.json
+test/k6/results.json
